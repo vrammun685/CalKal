@@ -161,10 +161,7 @@ settings/__init__.py
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-<<<<<<< HEAD
 
-=======
->>>>>>> 147420a04f535a6ffb2025ba8fe4aa7030e56908
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
