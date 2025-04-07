@@ -2,15 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 
-
 # Create your models here.
 
 class Usuario(AbstractUser):
-
     class Meta:
-        verbose_name='Usuario'
-        verbose_name_plural='Usuarios'
-    
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
+
     GENEROS = [
         ('Masculino', 'Masculino'),
         ('Femenino', 'Femenino'),
@@ -30,22 +28,22 @@ class Usuario(AbstractUser):
     ]
 
     altura = models.FloatField(null=True, blank=True)
-    edad = models.IntegerField(validators=[MinValueValidator(12)],null=True, blank=True)
+    edad = models.IntegerField(validators=[MinValueValidator(12)], null=True, blank=True)
     peso = models.FloatField(null=True, blank=True)
     imagen_Perfil = models.ImageField(null=True, blank=True)
-    genero = models.CharField(max_length=100, choices=GENEROS, default='Selecciona biologicamente',null=True, blank=True)
-    objetivo = models.CharField(max_length=200, choices=OBJETIVOS, default='Selecciona una opcion',null=True, blank=True)
-    actividad = models.CharField(max_length=30, choices=ACTIVIDAD, default='Selecciona una opcion',null=True, blank=True)
+    genero = models.CharField(max_length=100, choices=GENEROS, default='Selecciona biologicamente', null=True, blank=True)
+    objetivo = models.CharField(max_length=200, choices=OBJETIVOS, default='Selecciona una opcion', null=True, blank=True)
+    actividad = models.CharField(max_length=30, choices=ACTIVIDAD, default='Selecciona una opcion', null=True, blank=True)
     notificaciones = models.BooleanField()
 
     def __str__(self):
         return self.first_name
 
-class PesoRegistrado(models.Model):
 
+class PesoRegistrado(models.Model):
     class Meta:
-        verbose_name='Pesos Registrados'
-        verbose_name_plural='Lista de Pesos registrados'
+        verbose_name = 'Pesos Registrados'
+        verbose_name_plural = 'Lista de Pesos registrados'
 
     peso = models.FloatField()
     fecha = models.DateTimeField(auto_now_add=True)
@@ -55,49 +53,53 @@ class PesoRegistrado(models.Model):
     def __str__(self):
         return f"{self.usuario.username} - {self.peso} kg - {self.fecha.strftime('%Y-%m-%d %H:%M')}"
 
+
 class Diario(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='usuario')
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='diarios')
     fecha = models.DateField(auto_now_add=True)
-    calorias = models.FloatField(default = 0)
+    calorias = models.FloatField(default=0)
 
     class Meta:
-        verbose_name='Diario'
-        verbose_name_plural='Diarios'
+        verbose_name = 'Diario'
+        verbose_name_plural = 'Diarios'
         ordering = ['-fecha']
 
     def __str__(self):
         return f"{self.usuario.username} - {self.fecha} - {self.calorias} kcal"
-    
+
+
 class Comida(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='usuario')
-    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='diario')
-    numeroPersonas = models.IntegerField(default='1')
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='comidas')
+    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='comidas')
+    numeroPersonas = models.IntegerField(default=1)
 
     class Meta:
-        verbose_name='Comida'
-        verbose_name_plural='Comida'
+        verbose_name = 'Comida'
+        verbose_name_plural = 'Comidas'
+
 
 class AlimentoComida(models.Model):
-    comida = models.ForeignKey(Comida, on_delete=models.CASCADE, related_name='comida')
+    comida = models.ForeignKey(Comida, on_delete=models.CASCADE, related_name='alimentos')
     cantidad = models.FloatField()
-    nombre_es = models.CharField(max_length= 20)
-    nombre_en = models.CharField(max_length= 20)
-    medida = models.CharField(max_length= 20)
+    nombre_es = models.CharField(max_length=20)
+    nombre_en = models.CharField(max_length=20)
+    medida = models.CharField(max_length=20)
     grasas = models.FloatField()
     proteinas = models.FloatField()
     carbohidratos = models.FloatField()
     codigoAlimentos = models.IntegerField()
 
     class Meta:
-        verbose_name='Ingrediente'
-        verbose_name_plural='Ingrediente'
+        verbose_name = 'Ingrediente'
+        verbose_name_plural = 'Ingredientes'
+
 
 class AlimentoConsumido(models.Model):
-    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='diario')
+    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='alimentos_consumidos')
     cantidad = models.FloatField()
-    nombre_es = models.CharField(max_length= 20)
-    nombre_en = models.CharField(max_length= 20)
-    medida = models.CharField(max_length= 20)
+    nombre_es = models.CharField(max_length=20)
+    nombre_en = models.CharField(max_length=20)
+    medida = models.CharField(max_length=20)
     grasas = models.FloatField()
     proteinas = models.FloatField()
     carbohidratos = models.FloatField()
@@ -105,17 +107,17 @@ class AlimentoConsumido(models.Model):
     calorias = models.FloatField()
 
     class Meta:
-        verbose_name='Alimento'
-        verbose_name_plural='Alimento'
+        verbose_name = 'Alimento Consumido'
+        verbose_name_plural = 'Alimentos Consumidos'
+
 
 class EjercicioRealizado(models.Model):
-    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='diario')
-    nombre_es = models.CharField(max_length= 20)
-    nombre_en = models.CharField(max_length= 20)
+    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='ejercicios_realizados')
+    nombre_es = models.CharField(max_length=20)
+    nombre_en = models.CharField(max_length=20)
     calorias = models.FloatField()
     codigoEjrcicio = models.IntegerField()
-    
-    class Meta:
-        verbose_name='Ejercicio'
-        verbose_name_plural='Ejercicio'
 
+    class Meta:
+        verbose_name = 'Ejercicio Realizado'
+        verbose_name_plural = 'Ejercicios Realizados'
