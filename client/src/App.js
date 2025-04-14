@@ -1,24 +1,23 @@
-import logo from './logo.svg';
+import {BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-
-function App() {
+import PaginaInicio from './Pages/PaginaInicio';
+import PaginaListadoAlimentos from './Pages/PaginaListadoAlimentos';
+import MostrarDatos from './Pages/Mostrardatos';
+import PaginaPresentacion from './Pages/PaginaPresentacion';
+import PaginaLogin from './Pages/login';
+import PaginaRegistro from './Pages/Registro';
+export function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<PaginaPresentacion />} />
+        <Route path="/home" element={<PaginaInicio />} />
+        <Route path="/alimentos" element={<PaginaListadoAlimentos />} />
+        <Route path="/datos" element={<MostrarDatos />} />
+        <Route path='/login' element={<PaginaLogin />} />
+        <Route path='/registro' element={<PaginaRegistro />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

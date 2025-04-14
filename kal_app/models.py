@@ -34,7 +34,7 @@ class Usuario(AbstractUser):
     genero = models.CharField(max_length=100, choices=GENEROS, default='Selecciona biologicamente', null=True, blank=True)
     objetivo = models.CharField(max_length=200, choices=OBJETIVOS, default='Selecciona una opcion', null=True, blank=True)
     actividad = models.CharField(max_length=30, choices=ACTIVIDAD, default='Selecciona una opcion', null=True, blank=True)
-    notificaciones = models.BooleanField()
+    notificaciones = models.BooleanField(default=True)
 
     def __str__(self):
         return self.first_name
@@ -70,7 +70,7 @@ class Diario(models.Model):
 
 class Comida(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='comidas')
-    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='comidas')
+    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='comidas', null=True, blank=True)
     numeroPersonas = models.IntegerField(default=1)
 
     class Meta:

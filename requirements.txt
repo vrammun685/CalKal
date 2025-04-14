@@ -3,3 +3,4 @@ mysql-connector-python==9.2.0
 Pillow==11.1.0
 python-decouple
 djangorestframework
+django-cors-headers

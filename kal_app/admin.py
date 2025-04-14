@@ -6,10 +6,10 @@ from .models import AlimentoComida, AlimentoConsumido, EjercicioRealizado, Comid
 class UsuarioAdmin(UserAdmin):
     model = Usuario
     fieldsets = UserAdmin.fieldsets + (
-         (None, {'fields': ('altura', 'edad', 'peso','genero', 'objetivo', 'actividad','imagen')}),
+         (None, {'fields': ('altura', 'edad', 'peso','genero', 'objetivo', 'actividad','imagen_Perfil', 'notificaciones')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-         (None, {'fields': ('altura', 'edad', 'peso', 'genero', 'objetivo', 'actividad', 'imagen')}),
+         (None, {'fields': ('altura', 'edad', 'peso', 'genero', 'objetivo', 'actividad', 'imagen_Perfil', 'notificaciones')}),
     )
 
 admin.site.register(AlimentoComida),
