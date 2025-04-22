@@ -4,12 +4,27 @@ from .models import *
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id','username','first_name','last_name', 'email','altura', 'edad', 'peso','genero', 'objetivo', 'actividad','imagen_Perfil', 'notificaciones']
+        fields = ['id','username','first_name','last_name', 'email','altura', 'edad', 'peso','genero', 'objetivo', 'actividad','imagen_Perfil', 'notificaciones', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
-        def create(self, validated_data):
-            user = Usuario.objects.create_user(**validated_data)
-            return user
+    def validate_username(self, value):
+        if Usuario.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Este nombre de usuario ya está en uso")
+        return value
+        
+    def validate_email(self, value):
+        if Usuario.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Este correo electrónico ya está registrado")
+        return value
+
+    def create(self, validated_data):
+        user = Usuario.objects.create_user(**validated_data)
+        return user
+
+
+class LoginSerializer(serializers.Serializer):
+    usuario = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
 class PesoRegistradoSerializer(serializers.ModelSerializer):
     class Meta:

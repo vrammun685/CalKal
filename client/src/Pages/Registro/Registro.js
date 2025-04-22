@@ -1,8 +1,8 @@
-import '../App.css';
+import '../../App.css';
 import { useState, useEffect } from 'react';
-import { CambioIdioma } from '../Componentes/idioma';
+import { CambioIdioma } from '../../Componentes/idioma';
 import { Link } from "react-router-dom";
-import FormularioRegistro from '../Componentes/formularios';
+import FormularioRegistro from '../../Componentes/formularios';
 
 export default function PaginaRegistro() {
   const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');

@@ -9,3 +9,19 @@ Filtro para alimentos.
 Dibujo de funcionalidad para las UI
 Inicio del diseno de las paginas una por una y su logica correspondiente
 Inicio del diseno de las paginas de login y registro de usuarios
+
+Semana 5
+Registro
+------Terminado
+Creacion de usuarios y manejo de validaciones a la hora de enviar los datos
+------Por hacer
+Manejo de errores en el backend para visualizarlos tanto en ingles como en espanol
+
+Login
+------Terminado
+Recoger formulario y envio del token
+------Por hacer
+Autenticacion por token.
+Mostrar mensaje de error de autenticacion
+
+Semana 6
