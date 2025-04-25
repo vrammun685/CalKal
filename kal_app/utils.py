@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.conf import settings
+from .models import Diario, PesoRegistrado
 
 
 def correo_bienvenida(email, nombre):
@@ -38,3 +39,19 @@ def correo_recuperar_Contraseña(usuario, uid, token):
 def cambiar_Contraseña(usuario, nueva_Contraseña):
     usuario.set_password(nueva_Contraseña)
     usuario.save()
+
+
+def crearDiario(usuario):
+    diario =Diario.objects.create(
+        usuario = usuario,
+        calorias_a_Consumir = usuario.calcular_Calorias()
+    )
+    return diario
+
+def crearPeso(usuario):
+    PesoRegistrado.objects.create(
+        usuario = usuario,
+        peso = usuario.peso
+    )
+
+    

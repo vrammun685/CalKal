@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export function FormularioCambiarContraseña({idioma}){
   const { uid, token } = useParams();
@@ -127,6 +128,7 @@ export function FormularioLogin({ idioma }) {
   });
 
   const redireccion = useNavigate();
+  const { login } = useAuth(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -149,18 +151,11 @@ export function FormularioLogin({ idioma }) {
     try {
       const response = await axios.post('http://localhost:8000/api/login/', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
-      // Suponiendo que el backend devuelve algo como: { token: "abc123", username: "pepe" }
-    const { token, username } = response.data;
-
-    // Guarda el token (puedes usar localStorage o sessionStorage)
-    localStorage.setItem('token', token);
-    localStorage.setItem('username', username);
-
-    //Limpia de errores
+    login()
     setErrors({});
-    // Redirige al usuario, por ejemplo, al home o dashboard
-    redireccion('/');
+    redireccion('/home');
     } catch (error) {
       setErrors({
         es: 'Usuario o Contraseña incorrectos',
@@ -172,7 +167,7 @@ export function FormularioLogin({ idioma }) {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="card p-4 shadow" style={{ width: '350px' }}>
-        <h3 className="text-center mb-4">{idioma === 'es' ? 'Inicia Sesión' : 'Log in'}</h3>
+        <h3 className="text-center mb-4">{idioma === 'es' ? 'Iniciar Sesión' : 'Log in'}</h3>
 
         {errors && <small className="text-danger">{errors[idioma]}</small>}
         <form onSubmit={handleSubmit}>
@@ -434,6 +429,7 @@ export function FiltroAlimentos({ filtro, setFiltro }) {
                 value={formData.altura}
                 onChange={handleChange}
                 placeholder={idioma === 'es' ? 'Altura (cm)' : 'Height (cm)'}
+                required
               />
               {errors.altura && <small className="text-danger">{errors.altura[idioma]}</small>}
             </div>
@@ -446,6 +442,7 @@ export function FiltroAlimentos({ filtro, setFiltro }) {
                 value={formData.peso}
                 onChange={handleChange}
                 placeholder={idioma === 'es' ? 'Peso (kg)' : 'Weight (kg)'}
+                required
               />
               {errors.peso && <small className="text-danger">{errors.peso[idioma]}</small>}
             </div>
@@ -458,6 +455,7 @@ export function FiltroAlimentos({ filtro, setFiltro }) {
                 value={formData.edad}
                 onChange={handleChange}
                 placeholder={idioma === 'es' ? 'Edad' : 'Age'}
+                required
               />
               {errors.edad && <small className="text-danger">{errors.edad[idioma]}</small>}
             </div>

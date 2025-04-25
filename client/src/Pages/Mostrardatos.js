@@ -1,4 +1,4 @@
-import Menu from "../Componentes/Menu";
+import MenuPrincipal from '../Componentes/Menu';
 import { useState, useEffect } from 'react';
 import {ListadosUsuarios} from '../Componentes/Listados';
 
@@ -9,7 +9,7 @@ export default function MostrarDatos() {
     return (
         <div>
             <h1>Página de MuestraDatos</h1>
-            <Menu idioma={idioma} setIdioma={setIdioma}/>
+            <MenuPrincipal idioma={idioma} setIdioma={setIdioma}/>
 
             <ListadosUsuarios />
         </div>

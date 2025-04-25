@@ -34,7 +34,7 @@ class PesoRegistradoSerializer(serializers.ModelSerializer):
 class DiarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diario
-        fields = ['id', 'usuario', 'fecha', 'calorias']
+        fields = ['id', 'usuario', 'fecha', 'calorias_Consumidas', 'calorias_a_Consumir']
 
 class ComidaSerializer(serializers.ModelSerializer):
     class Meta:

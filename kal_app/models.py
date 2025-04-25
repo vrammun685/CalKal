@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
+import math
 
 # Create your models here.
 
@@ -38,6 +39,32 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.first_name
+    
+    def calcular_Calorias(self):
+        if(self.genero == "Masculino"):
+            tmb = 5 + (10*self.peso)+(6.25*self.altura)-(5*self.edad)
+        else:
+            tmb =(10*self.peso)+(6.25*self.altura)-(5*self.edad) -161
+        
+        if(self.actividad == 'Nula'):
+            calorias_mantenimiento = tmb*1.2
+        elif(self.actividad == '1 a 2 veces en semana'):
+            calorias_mantenimiento = tmb*1.375
+        elif(self.actividad == '3 a 5 veces en semana'):
+            calorias_mantenimiento = tmb*1.55
+        elif(self.actividad == '6 a 7 veces en semana'):
+            calorias_mantenimiento = tmb*1.725
+        else:
+            calorias_mantenimiento = tmb*1.9
+
+        if(self.objetivo == 'Perder peso'):
+            calorias = calorias_mantenimiento - 400
+        elif(self.objetivo == 'Ganar peso'):
+            calorias = calorias_mantenimiento + 400
+        else:
+            calorias = calorias_mantenimiento   
+        
+        return math.ceil(calorias)
 
 
 class PesoRegistrado(models.Model):
@@ -46,7 +73,7 @@ class PesoRegistrado(models.Model):
         verbose_name_plural = 'Lista de Pesos registrados'
 
     peso = models.FloatField()
-    fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateField(auto_now_add=True)
     foto_pesaje = models.ImageField(null=True, blank=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pesos')
 
@@ -57,7 +84,8 @@ class PesoRegistrado(models.Model):
 class Diario(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='diarios')
     fecha = models.DateField(auto_now_add=True)
-    calorias = models.FloatField(default=0)
+    calorias_Consumidas = models.FloatField(default=0)
+    calorias_a_Consumir = models.FloatField(default=0)
 
     class Meta:
         verbose_name = 'Diario'
@@ -65,7 +93,7 @@ class Diario(models.Model):
         ordering = ['-fecha']
 
     def __str__(self):
-        return f"{self.usuario.username} - {self.fecha} - {self.calorias} kcal"
+        return f"{self.usuario.username} - {self.fecha} - {self.calorias_a_Consumir} kcal"
 
 
 class Comida(models.Model):

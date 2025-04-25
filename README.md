@@ -25,3 +25,7 @@ Autenticacion por token.
 Mostrar mensaje de error de autenticacion
 
 Semana 6
+--Recuperar contrasena
+--Autenticacion por token guardado en el localstorage(Cambiar a una cookie httpOnly) --> Leer Errores de en recuperacion de contrasenas en ChatGPT
+--Logica del home
+--tokens, 
