@@ -17,5 +17,8 @@ urlpatterns = [
     #Paginas
     path('api/home/', Home.as_view(), name="Home"),
     path('api/diario/', Diarios.as_view(), name="Diarios"),
+    path('api/pesos/', Pesos.as_view(), name='pesos'),
+    path('api/pesos/<int:pk>/', Pesos.as_view(), name='pesoseliminar'),
+
 
 ]

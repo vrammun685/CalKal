@@ -9,6 +9,7 @@ import {PaginaRecuperarContraseñaCorreo, PaginaEscribirNuevaContraseña} from '
 import RutaPrivada from './Componentes/RutasPrivadas';
 import { Home } from './Pages/Home';
 import NotFoundPage from './Pages/NotFound';
+import PaginaPesos from './Pages/PaginaPesos';
 
 export function App() {
   return (
@@ -16,6 +17,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<PaginaPresentacion />} />
         <Route path="/home" element={<RutaPrivada><Home /></RutaPrivada>} />
+        <Route path="/pesos" element={<RutaPrivada><PaginaPesos /></RutaPrivada>} />
         <Route path="/datos" element={<RutaPrivada><MostrarDatos /></RutaPrivada>} />
         <Route path='/login' element={<PaginaLogin />} />
         <Route path='/registro' element={<PaginaRegistro />} />

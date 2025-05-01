@@ -4,7 +4,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Usuario, Diario, PesoRegistrado
-from .serializers import UsuarioSerializer, LoginSerializer, DiarioSerializer
+from .serializers import UsuarioSerializer, LoginSerializer, DiarioSerializer, PesoRegistradoSerializer
 from .utils import correo_bienvenida, correo_recuperar_Contraseña, cambiar_Contraseña, crearDiario, crearPeso
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -43,7 +43,7 @@ class Login(APIView):
             #Creamos el diario del dia
             diario = Diario.objects.filter(usuario=user).order_by('-fecha').first()
             if(diario.fecha != date.today()):
-                diario = crearDiario(usuario)
+                diario = crearDiario(user)
 
             # Si la autenticación es exitosa, creamos un token
             refresh = RefreshToken.for_user(user)
@@ -173,3 +173,21 @@ class Diarios(ListAPIView):
 
     def get_queryset(self):
         return Diario.objects.filter(usuario=self.request.user) 
+    
+class Pesos(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        pesos = PesoRegistrado.objects.filter(usuario=request.user)
+        serializer = PesoRegistradoSerializer(pesos, many=True, context={'request': request})
+        return Response({"pesos":serializer.data})
+    
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        try:
+            peso = PesoRegistrado.objects.get(pk=pk, usuario=self.request.user)
+            peso.delete()
+
+            return Response({'mensaje':'Peso eliminado'}, status=status.HTTP_204_NO_CONTENT)
+        except PesoRegistrado.DoesNotExist:
+            return Response({'error':'Peso no encontrado'}, status=status.HTTP_404_NOT_FOUND)

@@ -29,3 +29,20 @@ Semana 6
 --Autenticacion por token guardado en el localstorage(Cambiar a una cookie httpOnly) --> Leer Errores de en recuperacion de contrasenas en ChatGPT
 --Logica del home
 --tokens, 
+
+
+Fallos Detectados
+--Cuando un token caduca e intentas acceder al otra pagina no carga los datos por que no hace refreshtoken
+
+Que meter en la Presentacion
+--Meter en la presentacion animaciones de inicio
+--Cambie el video de fondo
+--Cambiar Fuente
+
+
+Paleta de Colores
+Color Principal ---> #4CAF87
+Color Secundario ---> #E4B363
+Fondo ----> #E8E9EB
+Letra ---> #313638
+Errores ----> #EF6461

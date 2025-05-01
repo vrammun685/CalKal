@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 import math
+from django.utils import timezone
 
 # Create your models here.
 
@@ -73,7 +74,7 @@ class PesoRegistrado(models.Model):
         verbose_name_plural = 'Lista de Pesos registrados'
 
     peso = models.FloatField()
-    fecha = models.DateField(auto_now_add=True)
+    fecha = models.DateField(default=timezone.now)
     foto_pesaje = models.ImageField(null=True, blank=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pesos')
 
@@ -92,8 +93,6 @@ class Diario(models.Model):
         verbose_name_plural = 'Diarios'
         ordering = ['-fecha']
 
-    def __str__(self):
-        return f"{self.usuario.username} - {self.fecha} - {self.calorias_a_Consumir} kcal"
 
 
 class Comida(models.Model):

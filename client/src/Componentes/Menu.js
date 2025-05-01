@@ -34,8 +34,31 @@ export default function MenuPrincipal({idioma, setIdioma}) {
       <Link to="/diarios">{idioma === 'es' ? 'Diarios' : 'Diaries'}</Link>
       <Link to="/pesos">{idioma === 'es' ? 'Pesos' : 'Weights'}</Link>
       <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} />
+      <MenuPerfil idioma={idioma}/>
     </nav>
   );
+}
+
+export function MenuPerfil({idioma}){
+  const [eleccion, setEleccion] = useState("");
+
+  const handleChange = (event) => {
+    setEleccion(event.target.value);
+  };
+  
+  return(
+    <div>
+      <h2>Selecciona una opción:</h2>
+      <select value={eleccion} onChange={handleChange}>
+        <option value="">Seleccionar...</option>
+        <option value="opcion1">Opción 1</option>
+        <option value="opcion2">Opción 2</option>
+        <option value="opcion3">Opción 3</option>
+      </select>
+
+      <p>Opción seleccionada: {eleccion}</p>
+    </div>
+  )
 }
 
 

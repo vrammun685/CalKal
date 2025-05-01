@@ -42,20 +42,21 @@ export function AuthProvider({children}) {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/checktoken/', {
-      withCredentials: true
-    })
-    .then(() => {
-      setToken(true);
-    })
-    .catch(() => {
-      setToken(null);
-      refreshToken();
-    })
-    .finally(() => {
-      setLoading(false);
-    });
-  }, []);
+    const verifyToken = async () => {
+      try {
+        await axios.get('http://localhost:8000/api/checktoken/', {
+          withCredentials: true
+        });
+        setToken(true);
+      } catch {
+        await refreshToken();  // Aquí sí puedes usar await
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    verifyToken();
+  }, []);  
 
     return (
       <AuthContext.Provider value={{ token, login, logout, loading }}>
