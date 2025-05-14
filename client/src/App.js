@@ -25,7 +25,7 @@ export function App() {
         <Route path='/registro/PoliticaPrivacidad' element={<PoliticaPrivacidad />} />
         <Route path='/RecuperarContraseña' element={<PaginaRecuperarContraseñaCorreo />} />
         <Route path='/RecuperarContraseña/EscribirContraseña/:uid/:token' element={<PaginaEscribirNuevaContraseña />} />
-
+      
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

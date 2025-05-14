@@ -4,55 +4,70 @@ import { useState, useEffect } from 'react';
 import { CambioIdioma } from '../Componentes/idioma';
 import { Link } from "react-router-dom";
 import { FondoCambiante } from '../Componentes/Visual';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function PaginaPresentacion() {
   const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');
   const [logoAnimado, setLogoAnimado] = useState(false);
+  const navigate = useNavigate();
 
   const cambiarIdioma = (nuevoIdioma) => {
     setIdioma(nuevoIdioma);
     localStorage.setItem('idioma', nuevoIdioma);
   };
+    
+  const irARegistro = () => {
+    navigate('/registro');
+  };
 
-  const animarLogo = () => {
-    setLogoAnimado(true);
-    setTimeout(() => setLogoAnimado(false), 800); // Duración de la animación
+  const irALogin = () => {
+    navigate('/login');
   };
 
   return (
     <div className="pagina-presentacion">
-      <section className="seccion-video">
-        <FondoCambiante className='video-fondo' />
+    {/*Seccion de presentacion principal */}
+    <section className="seccion-video d-flex justify-content-center align-items-center">
+        <FondoCambiante className="video-fondo" />
 
-        {/* El selector de idioma se posiciona en la parte superior derecha */}
-        <CambioIdioma className='cambioIdioma' idioma={idioma} onChangeIdioma={cambiarIdioma} />
+        {/* Selector de idioma */}
+        <CambioIdioma className="cambioIdioma" idioma={idioma} onChangeIdioma={cambiarIdioma} />
 
-        <div className="tarjeta-Presentacion">
-          <img className='imagen-logo' src='/media/logo.png' alt='logo' />
-          <h1 className='titulo'>{idioma === 'es' ? 'Bienvenido a CalKal' : 'Welcome to CalKal'}</h1>
-          <p className='subtitulo'>
-            {idioma === 'es'
-              ? 'Tu guía de alimentación, salud y bienestar.'
-              : 'Your guide to food, health, and wellness.'}
-          </p>
-          <Link to="/login">
-            <button className="boton-inicio">
-              {idioma === 'es' ? '¡Empecemos!' : "Let's get started!"}
-            </button>
-          </Link>
-
+        <div className="tarjeta-Presentacion container text-center">
+          <div className="row justify-content-center">
+            <div className="col-12 col-md-10 col-lg-8">
+              <img className="imagen-logo img-fluid mb-3" src="/media/logo.png" alt="logo" />
+              <h1 className="titulo">{idioma === 'es' ? 'Bienvenido a CalKal' : 'Welcome to CalKal'}</h1>
+              <p className="subtitulo">
+                {idioma === 'es'
+                  ? 'Tu guía de alimentación, salud y bienestar.'
+                  : 'Your guide to food, health, and wellness.'}
+              </p>
+              <a href="#info">
+                <button className="boton-inicio">
+                  {idioma === 'es' ? '¡Empecemos!' : "Let's get started!"}
+                </button>
+              </a>
+            </div>
+          </div>
         </div>
-        <a href="#info" className="flecha-abajo">⬇</a>
       </section>
 
-      <section id="info" className="descripcion-app">
-        <h2 className="titulo-seccion">
-          {idioma === 'es' ? 'Sobre nosotros' : 'About us'}
-        </h2>
 
+      {/*Seccion de informacion*/}
+      <section id="info" className="descripcion-app">
+        <div className="text-center mb-4">
+          <img src="/media/gif/Gif-Comida.gif" alt="GIF de comida" style={{ maxHeight: "150px" }} />
+          <h2 className="titulo-seccion">
+            {idioma === 'es' ? 'Sobre nosotros' : 'About us'}
+          </h2>
+        </div>
+        
         <div className="tarjetas-info">
+          {/*Tarjeta de informacion*/}
           <div className="tarjeta-info">
+            <i className="bi bi-info-circle fs-1 iconos"></i>
             <h3>{idioma === 'es' ? '¿Qué es CalKal?' : 'What is CalKal?'}</h3>
             <p>
               {idioma === 'es'
@@ -60,8 +75,10 @@ export default function PaginaPresentacion() {
                 : 'An app to log meals, track calories, and improve your daily habits.'}
             </p>
           </div>
-
+          
+          {/*Tarjeta de Por que*/}
           <div className="tarjeta-info">
+            <i className="bi bi-question-circle fs-1 iconos"></i> 
             <h3>{idioma === 'es' ? '¿Por qué elegirnos?' : 'Why choose us?'}</h3>
             <p>
               {idioma === 'es'
@@ -70,7 +87,9 @@ export default function PaginaPresentacion() {
             </p>
           </div>
 
+          {/*Tarjeta de Contacto*/}
           <div className="tarjeta-info">
+            <i className="bi bi-envelope fs-1 iconos"></i>
             <h3>{idioma === 'es' ? 'Contacto' : 'Contact'}</h3>
             <p>
               {idioma === 'es'
@@ -81,13 +100,22 @@ export default function PaginaPresentacion() {
           </div>
         </div>
         
-        <Link to="/registro">
-          <button className="boton-extra">
-            {idioma === 'es' ? 'Crear cuenta' : "Create account"}
-          </button>
-        </Link>
-
-      
+        <div className="container mt-4">
+          <div className="row justify-content-center g-3">
+            <div className="col-12 col-md-5 d-grid">
+              <div className="col-12 col-md-5 d-grid">
+                <button className="boton-extra" onClick={irARegistro}>
+                  {idioma === 'es' ? 'Registrarse' : 'Create account'}
+                </button>
+              </div>
+              <div className="col-12 col-md-5 d-grid">
+                <button className="boton-extra" onClick={irALogin}>
+                  {idioma === 'es' ? 'Iniciar Sesión' : 'Log In'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>      
       </section>
     </div>
   );

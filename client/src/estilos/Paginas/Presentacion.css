@@ -46,12 +46,11 @@
   
   /* Estilo para la tarjeta de presentación */
   .tarjeta-Presentacion {
-    position: relative;
-    width: 50%;
-    padding: 5rem;
-    border-radius: 50px;
+    background-color: transparent;
     color: #E8E9EB;
-    text-align: center;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 100%;
   }
   
   /* Estilo del logo */
@@ -156,7 +155,15 @@
     background-color: #E4B363;
   }
   
+  .iconos{
+    color: #4CAF87;
+    display: inline-block;
+    transition: color 0.5s ease;
+  }
 
+  .iconos:hover {
+    color: #E4B363;
+}
 
 
 /*Animaciones*/
@@ -171,11 +178,36 @@
   }
 }
 
-@keyframes flechaBounce {
-    0%, 100% {
-      transform: translateY(0);
+
+  @media (min-width: 768px) {
+    .tarjeta-Presentacion {
+      padding: 4rem;
+      border-radius: 50px;
     }
-    50% {
-      transform: translateY(8px);
+  }
+  
+  .titulo {
+    font-size: 2.8rem;
+  }
+  
+  @media (min-width: 768px) {
+    .titulo {
+      font-size: 4rem;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .titulo {
+      font-size: 6.8rem;
+    }
+  }
+  
+  .subtitulo {
+    font-size: 1.2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .subtitulo {
+      font-size: 2rem;
     }
   }

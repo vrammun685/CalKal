@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import FormularioRegistro from '../../Componentes/formularios';
 
 export default function PaginaRegistro() {
+
+  
   const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');
 
   const cambiarIdioma = (nuevoIdioma) => {
@@ -17,4 +19,5 @@ export default function PaginaRegistro() {
         <FormularioRegistro idioma={idioma}/>
     </div>
   );
+  
 }

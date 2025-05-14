@@ -102,7 +102,7 @@ export function FormularioPedirEmail({idioma}){
 
   return(
     <form onSubmit={handleSubmit} className="container mt-5" style={{ maxWidth: '400px' }}>
-      <h4 className="mb-3">{idioma === 'es' ? 'Recuperar contraseña' : 'e'}</h4>
+      <h4 className="mb-3">{idioma === 'es' ? 'Recuperar contraseña' : 'Recover password'}</h4>
       {errors && <small className="text-danger">{errors[idioma]}</small>}
       <div className="mb-3">
         <input
@@ -358,7 +358,7 @@ export function FiltroAlimentos({ filtro, setFiltro }) {
     };
   
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="d-flex justify-content-center align-items-center">
         <div className="card p-4 shadow" style={{ width: '400px' }}>
           <h3 className="text-center mb-4">
             {idioma === 'es' ? 'Registro de Usuario' : 'User Registration'}

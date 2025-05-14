@@ -1,37 +1,28 @@
-/* Estilos para el contenedor del selector de idioma */
 .cambioIdioma-container {
-    display: flex;
-    gap: 25px; /* Espacio entre los botones */
-    position: absolute;
-    top: 20px;
-    right: 20px; /* Lo coloca en la esquina superior derecha */
-    z-index: 10; /* Asegura que el selector de idioma esté por encima del contenido */
-    background-color: transparent;
+  width: 150px; /* Ajusta el ancho que prefieras */
+  max-width: 100%; /* Asegura que el ancho no se exceda del 100% del contenedor padre */
+  margin: 0 auto; /* Centra el contenedor si lo deseas */
+
+}
+.custom-select__control:hover {
+  border-color: #E4B363;
+}
+
+.custom-select__control:hover .custom-select__single-value {
+  color: #E4B363;
+}
+
+.custom-select__control:hover .custom-select__dropdown-indicator {
+  color: #E4B363;
+}
+
+@media (max-width: 480px) {
+  .cambioIdioma-container {
+    width: 50%;  /* Asegura que el contenedor ocupe solo el 100% */
   }
-  
-  /* Estilos para los botones de cambio de idioma */
-  .cambioIdioma-btn {
-    padding: 10px 20px;
-    border: 2px solid #4CAF87; /* Borde de color amarillo */
-    background-color: transparent;
-    color: #4CAF87; /* Texto amarillo */
-    font-size: 1.5rem;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+
+  .react-select__control {
+    width: 80%;   /* Ajusta el ancho del selector según el tamaño de la pantalla */
+    margin: 0 auto; /* Centra el selector en pantallas pequeñas */
   }
-  
-  /* Estilos cuando el botón está activo */
-  .cambioIdioma-btn.active {
-    background-color: #4CAF87; /* Fondo amarillo */
-    color: white; /* Texto blanco */
-  }
-  
-  /* Estilo al hacer hover sobre el botón */
-  .cambioIdioma-btn:hover {
-    background-color: #E4B363; /* Fondo amarillo en hover */
-    color: white; /* Texto blanco en hover */
-    border: 2px solid #E4B363;
-  }
-  
+}

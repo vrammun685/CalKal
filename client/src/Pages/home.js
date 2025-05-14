@@ -14,6 +14,7 @@ export function Home(){
             .then(res => {
                 setDatosUsuario(res.data);
                 console.log("Datos del usuario:", res.data);
+                
             })
             .catch(err => {
                 console.error("Error al obtener datos del usuario:", err);
@@ -22,9 +23,9 @@ export function Home(){
 
     return(
         <div>
-            <MenuPrincipal idioma={idioma} setIdioma={setIdioma}/>
             {datosUsuario && (
                 <div>
+                    <MenuPrincipal idioma={idioma} setIdioma={setIdioma} imagenPerfil={datosUsuario.foto_perfil}/>
                     <h3>!Buenas {datosUsuario.usuario}!</h3>
                     <GraficoCalorias consumidas = {datosUsuario.calorias_Consumidas} objetivo={datosUsuario.calorias_a_consumir}/>
                 </div>

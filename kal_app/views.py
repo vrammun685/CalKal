@@ -163,7 +163,12 @@ class Home(APIView):
     def get(self, request):
         usuario = request.user
         diario = Diario.objects.filter(usuario=usuario).order_by('-fecha').first()
+        try:
+            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
+        except (ValueError, AttributeError):
+            imagen = request.build_absolute_uri('/media/imagenSinPerfil.jpg')
         return Response({"usuario": usuario.first_name,
+                         "foto_perfil":imagen,
                          "calorias_a_consumir": diario.calorias_a_Consumir,
                          "calorias_Consumidas": diario.calorias_Consumidas})
 

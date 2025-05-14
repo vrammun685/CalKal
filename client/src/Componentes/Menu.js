@@ -1,4 +1,5 @@
 import '../App.css';
+import '../estilos/Componentes/Menu.css';
 import { useEffect, useState} from 'react';
 import { Link } from "react-router-dom";
 import { CambioIdioma } from './idioma';
@@ -7,15 +8,27 @@ import { useAuth } from '../context/AuthContext';
 
 
 
-export default function MenuPrincipal({idioma, setIdioma}) {
-  const redireccion = useNavigate();
-  const { logout } = useAuth(); 
-
+export default function MenuPrincipal({idioma, setIdioma, imagenPerfil}) {
   const cambiarIdioma = (nuevoIdioma) => {
     setIdioma(nuevoIdioma);
     localStorage.setItem('idioma', nuevoIdioma);
   };
 
+  return (
+    <nav>
+      <Link to="/home">{idioma === 'es' ? 'Inicio' : 'Home'}</Link>
+      <Link to="/diarios">{idioma === 'es' ? 'Diarios' : 'Diaries'}</Link>
+      <Link to="/pesos">{idioma === 'es' ? 'Pesos' : 'Weights'}</Link>
+      <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} />
+      <MenuPerfil idioma={idioma} imagenPerfil={imagenPerfil}/>
+    </nav>
+  );
+}
+
+export function MenuPerfil({idioma, imagenPerfil}){
+  const [open, setOpen] = useState(false);
+  const { logout } = useAuth();
+  const redireccion = useNavigate();
   const CerrarSesion = async () => {
     
     try{ 
@@ -28,38 +41,22 @@ export default function MenuPrincipal({idioma, setIdioma}) {
     }
 
   return (
-    <nav>
-      <button onClick={CerrarSesion}>{idioma === 'es' ? 'Cerrar Sesion' : 'Log out'}</button>
-      <Link to="/home">{idioma === 'es' ? 'Inicio' : 'Home'}</Link>
-      <Link to="/diarios">{idioma === 'es' ? 'Diarios' : 'Diaries'}</Link>
-      <Link to="/pesos">{idioma === 'es' ? 'Pesos' : 'Weights'}</Link>
-      <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} />
-      <MenuPerfil idioma={idioma}/>
-    </nav>
-  );
-}
-
-export function MenuPerfil({idioma}){
-  const [eleccion, setEleccion] = useState("");
-
-  const handleChange = (event) => {
-    setEleccion(event.target.value);
-  };
-  
-  return(
-    <div>
-      <h2>Selecciona una opción:</h2>
-      <select value={eleccion} onChange={handleChange}>
-        <option value="">Seleccionar...</option>
-        <option value="opcion1">Opción 1</option>
-        <option value="opcion2">Opción 2</option>
-        <option value="opcion3">Opción 3</option>
-      </select>
-
-      <p>Opción seleccionada: {eleccion}</p>
+    <div className="perfil-dropdown">
+      <img
+        src={imagenPerfil}
+        alt="Perfil"
+        className="perfil-imagen"
+        onClick={() => setOpen(!open)}
+      />
+      {open && (
+        <div className="perfil-menu">
+          <Link to="/editarPerfil">{idioma === 'es' ? 'Editar Perfil' : 'Edit profile'}</Link>
+          <button onClick={CerrarSesion}>{idioma === 'es' ? 'Cerrar Sesion' : 'Log out'}</button>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
 
 
