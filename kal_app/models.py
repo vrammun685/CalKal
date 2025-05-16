@@ -66,6 +66,49 @@ class Usuario(AbstractUser):
             calorias = calorias_mantenimiento   
         
         return math.ceil(calorias)
+    
+    def calcular_Proteinas(self):
+        calorias = self.calcular_Calorias()
+
+        if(self.objetivo == 'Perder peso'):
+            calorias_proteinas = calorias*35/100
+        elif(self.objetivo == 'Ganar peso'):
+            calorias_proteinas = calorias*25/100
+        else:
+            calorias_proteinas = calorias*20/100 
+        
+        proteinas = calorias_proteinas/4
+        
+        return round(proteinas, 1)
+    
+    def calcular_Grasas(self):
+        calorias = self.calcular_Calorias()
+
+        if(self.objetivo == 'Perder peso'):
+            calorias_grasas = calorias*25/100
+        elif(self.objetivo == 'Ganar peso'):
+            calorias_grasas = calorias*25/100
+        else:
+            calorias_grasas = calorias*30/100 
+        
+        grasas = calorias_grasas/9
+        
+        return round(grasas, 1)
+    
+    def calcular_Carbohidratos(self):
+        calorias = self.calcular_Calorias()
+
+        if(self.objetivo == 'Perder peso'):
+            calorias_carbohidratos = calorias*40/100
+        elif(self.objetivo == 'Ganar peso'):
+            calorias_carbohidratos = calorias*50/100
+        else:
+            calorias_carbohidratos = calorias*50/100 
+        
+        carbohidratos = calorias_carbohidratos/4
+        
+        return round(carbohidratos, 1)
+    
 
 
 class PesoRegistrado(models.Model):
@@ -85,19 +128,42 @@ class PesoRegistrado(models.Model):
 class Diario(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='diarios')
     fecha = models.DateField(auto_now_add=True)
-    calorias_Consumidas = models.FloatField(default=0)
-    calorias_a_Consumir = models.FloatField(default=0)
+
+    #Calorias
+    calorias_Consumidas = models.FloatField(default=0, null=True, blank=True)
+    calorias_a_Consumir = models.FloatField(default=0, null=True, blank=True)
+
+    #Proteinas
+    proteinas_Consumidas = models.FloatField(default=0, null=True, blank=True)
+    proteinas_a_Consumir = models.FloatField(default=0, null=True, blank=True)
+
+    #Grasas
+    grasas_Consumidas = models.FloatField(default=0, null=True, blank=True)
+    grasas_a_Consumir = models.FloatField(default=0, null=True, blank=True)
+
+    #Carbohidratos
+    carbohidratos_Consumidas = models.FloatField(default=0, null=True, blank=True)
+    carbohidratos_a_Consumir = models.FloatField(default=0, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Diario'
         verbose_name_plural = 'Diarios'
         ordering = ['-fecha']
 
+    def __str__(self):
+        return f"{self.usuario.username} - {self.fecha}"
 
 
 class Comida(models.Model):
+    PARTE_DIA =[
+        ('Desayuno', 'Desayuno'),
+        ('Almuerzo', 'Almuerzo'),
+        ('Cena', 'Cena'),
+        ('Otro', 'Otro')
+    ]
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='comidas')
     diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='comidas', null=True, blank=True)
+    parte_del_dia=models.CharField(max_length=30, choices=PARTE_DIA, default='Selecciona una opcion')
     numeroPersonas = models.IntegerField(default=1)
 
     class Meta:
@@ -122,7 +188,16 @@ class AlimentoComida(models.Model):
 
 
 class AlimentoConsumido(models.Model):
+
+    PARTE_DIA =[
+        ('Desayuno', 'Desayuno'),
+        ('Almuerzo', 'Almuerzo'),
+        ('Cena', 'Cena'),
+        ('Otro', 'Otro')
+    ]
+
     diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='alimentos_consumidos')
+    parte_del_dia=models.CharField(max_length=30, choices=PARTE_DIA, default='Selecciona una opcion')
     cantidad = models.FloatField()
     nombre_es = models.CharField(max_length=20)
     nombre_en = models.CharField(max_length=20)

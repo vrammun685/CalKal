@@ -1,0 +1,27 @@
+/* MacroBar.css */
+
+.macro-bar {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.macro-bar-header {
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.macro-bar-subtext {
+  font-size: 1rem;
+  color: #6c757d; /* texto gris */
+}
+
+.macro-bar-progress {
+  height: 20px;
+  line-height: 1;
+}
+
+@media (max-width: 767.98px) {
+  .macro-bar {
+    max-width: 70%;
+  }
+}

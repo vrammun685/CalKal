@@ -55,10 +55,10 @@ export default function FormularioRegistro({ idioma }) {
         };
       }
       
-      if (formData.edad < 0 || isNaN(formData.edad)) {
+      if (formData.edad < 12 || isNaN(formData.edad)) {
         newErrors.edad = {
-          es: 'La edad debe ser un número positivo',
-          en: 'Age must be a positive number',
+          es: 'La edad debe ser un número positivo mayor que 12',
+          en: 'Age must be a positive number more than 12',
         };
       }
       
@@ -125,6 +125,7 @@ export default function FormularioRegistro({ idioma }) {
         console.log(response.data);
         redireccion('/login', { state: { mensajees:'Te has registrado correctamente', mensajeen: 'You have registered successfully' } });
       } catch (error) {
+        console.error('Error registro:', error.response?.data || error.message);
         const responseErrors = error.response?.data;
         if (responseErrors) {
           setErrors(responseErrors);

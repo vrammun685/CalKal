@@ -44,7 +44,10 @@ def cambiar_Contraseña(usuario, nueva_Contraseña):
 def crearDiario(user):
     diario = Diario.objects.create(
         usuario=user,  
-        calorias_a_Consumir=user.calcular_Calorias()
+        calorias_a_Consumir=user.calcular_Calorias(),
+        proteinas_a_Consumir=user.calcular_Proteinas(),
+        grasas_a_Consumir=user.calcular_Grasas(),
+        carbohidratos_a_Consumir=user.calcular_Carbohidratos()
     )
     return diario
 

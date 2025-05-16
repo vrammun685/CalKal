@@ -124,6 +124,7 @@ class Logout(APIView):
     def post(self, request):
         response = Response({"message":"Logged out"}, status=status.HTTP_200_OK)
         response.delete_cookie('token')
+        response.delete_cookie('refresh_token')
         return response
 
 class SolicitarCorreoPass(APIView):
@@ -170,7 +171,13 @@ class Home(APIView):
         return Response({"usuario": usuario.first_name,
                          "foto_perfil":imagen,
                          "calorias_a_consumir": diario.calorias_a_Consumir,
-                         "calorias_Consumidas": diario.calorias_Consumidas})
+                         "calorias_Consumidas": diario.calorias_Consumidas,
+                         "proteinas_Consumidas":diario.proteinas_Consumidas,
+                         "proteinas_a_Consumir":diario.proteinas_a_Consumir,
+                         "grasas_Consumidas":diario.grasas_Consumidas,
+                         "grasas_a_Consumir":diario.grasas_a_Consumir,
+                         "carbohidratos_Consumidas":diario.carbohidratos_Consumidas,
+                         "carbohidratos_a_Consumir":diario.carbohidratos_a_Consumir})
 
 class Diarios(ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -183,9 +190,15 @@ class Pesos(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        usuario= request.user
         pesos = PesoRegistrado.objects.filter(usuario=request.user)
         serializer = PesoRegistradoSerializer(pesos, many=True, context={'request': request})
-        return Response({"pesos":serializer.data})
+        try:
+            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
+        except (ValueError, AttributeError):
+            imagen = request.build_absolute_uri('/media/imagenSinPerfil.jpg')
+        return Response({"pesos":serializer.data,
+                         "foto_perfil":imagen})
     
     def delete(self, request, *args, **kwargs):
         pk = kwargs.get('pk')

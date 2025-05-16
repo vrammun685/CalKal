@@ -28,9 +28,10 @@ export default function PaginaPresentacion() {
     {/*Seccion de presentacion principal */}
     <section className="seccion-video d-flex justify-content-center align-items-center">
         <FondoCambiante className="video-fondo" />
-
+        
         {/* Selector de idioma */}
         <CambioIdioma className="cambioIdioma" idioma={idioma} onChangeIdioma={cambiarIdioma} />
+        
 
         <div className="tarjeta-Presentacion container text-center">
           <div className="row justify-content-center">
@@ -100,18 +101,16 @@ export default function PaginaPresentacion() {
         
         <div className="container mt-4">
           <div className="row justify-content-center g-3">
-            <div className="col-12 col-md-5 d-grid">
-              <div className="col-12 col-md-5 d-grid">
+              <div className="col-6 col-md-5">
                 <button className="boton-extra" onClick={irARegistro}>
                   {idioma === 'es' ? 'Registrarse' : 'Create account'}
                 </button>
               </div>
-              <div className="col-12 col-md-5 d-grid">
+              <div className="col-6 col-md-5">
                 <button className="boton-extra" onClick={irALogin}>
                   {idioma === 'es' ? 'Iniciar Sesión' : 'Log In'}
                 </button>
               </div>
-            </div>
           </div>
         </div>      
       </section>
