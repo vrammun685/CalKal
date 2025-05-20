@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../../auth/AuthContext';  // Cambia esto a donde tengas definido useAuth
-
+import "./FormularioLogin.css";
+import api from '../../../auth/axiosConfig';
 
 export function FormularioLogin({ idioma }) {
   const [errors, setErrors]= useState({});
@@ -33,9 +34,8 @@ export function FormularioLogin({ idioma }) {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', data, {
+      const response = await api.post('login/', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
-        withCredentials: true,
       });
     login()
     setErrors({});
@@ -49,7 +49,7 @@ export function FormularioLogin({ idioma }) {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center">
+    <div className="login-container d-flex justify-content-center align-items-center">
       <div className="card p-4 shadow" style={{ width: '350px' }}>
         <h3 className="text-center mb-4">{idioma === 'es' ? 'Iniciar Sesión' : 'Log in'}</h3>
 
@@ -79,7 +79,7 @@ export function FormularioLogin({ idioma }) {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mb-3">
+          <button type="submit" className="btn boton w-100 mb-3">
             {idioma === 'es' ? 'Inicia Sesión' : 'Log in'}
           </button>
         </form>

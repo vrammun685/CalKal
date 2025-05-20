@@ -5,6 +5,7 @@ import { FondoCambiante } from '../../Componentes/Video_Fondo/Videofondo';
 import { useNavigate } from 'react-router-dom';
 
 
+
 export default function PaginaPresentacion() {
   const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');
   const [logoAnimado, setLogoAnimado] = useState(false);
@@ -21,6 +22,16 @@ export default function PaginaPresentacion() {
 
   const irALogin = () => {
     navigate('/login');
+  };
+
+  const copiarAlPortapapeles = async (enlace, idioma) => {
+    try {
+      await navigator.clipboard.writeText(enlace);
+      alert(idioma === 'es' ? 'Enlace copiado al portapapeles' : 'Use Our API');
+    } catch (err) {
+      alert(idioma === 'es' ? 'Error al copiar el enlace' : 'Use Our API');
+      console.error(err);
+    }
   };
 
   return (
@@ -43,7 +54,7 @@ export default function PaginaPresentacion() {
                   ? 'Tu guía de alimentación, salud y bienestar.'
                   : 'Your guide to food, health, and wellness.'}
               </p>
-              <a href="">
+              <a href="#info">
                 <button className="boton-inicio">
                   {idioma === 'es' ? '¡Empecemos!' : "Let's get started!"}
                 </button>
@@ -96,6 +107,17 @@ export default function PaginaPresentacion() {
                 : 'If you encounter any issue, contact us at:'}
             </p>
             <p><strong>calkal685@gmail.com</strong></p>
+          </div>
+
+          <div className="tarjeta-info">
+            <i className="bi bi-envelope fs-1 iconos"></i>
+            <h3>API</h3>
+            <p>
+              {idioma === 'es'
+                ? 'Aqui puedes utilizar nuestra api con todos los alimentos que manejamos'
+                : 'Here you can use our API with all the foods we manage'}
+            </p>
+            <span className="copiarEnlace fs-4" onClick={() => copiarAlPortapapeles("http://127.0.0.1:8000/api/alimentos/", idioma)}>API</span>
           </div>
         </div>
         

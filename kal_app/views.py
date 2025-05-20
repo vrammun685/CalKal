@@ -3,19 +3,45 @@ from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Usuario, Diario, PesoRegistrado
-from .serializers import UsuarioSerializer, LoginSerializer, DiarioSerializer, PesoRegistradoSerializer
+from .models import Usuario, Diario, PesoRegistrado, AlimentoConsumido, Comida, Alimento
+from .serializers import UsuarioSerializer, LoginSerializer, DiarioSerializer, PesoRegistradoSerializer, AlimentoConsumidoSerializer, ComidaSerializer, AlimentoSerializer
 from .utils import correo_bienvenida, correo_recuperar_Contraseña, cambiar_Contraseña, crearDiario, crearPeso
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from datetime import date
+from collections import defaultdict
+from rest_framework.renderers import JSONRenderer
 # Create your views here.
+    
+class AlimentoListAPIView(ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = Alimento.objects.all()
+    serializer_class = AlimentoSerializer
+    renderer_classes = [JSONRenderer]
+
+class CheckUsername(APIView):
+    def get(self, request):
+        username = request.query_params.get('username')
+        if username is None:
+            return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        exists = Usuario.objects.filter(username=username).exists()
+        return Response({"exists": exists})
+
+class CheckEmail(APIView):
+    def get(self, request):
+        email = request.query_params.get('email')
+        if email is None:
+            return Response({"error": "No email provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        exists = Usuario.objects.filter(email=email).exists()
+        return Response({"exists": exists})
     
 class RegistroUsuario(CreateAPIView):
     queryset = Usuario.objects.all()
@@ -164,27 +190,54 @@ class Home(APIView):
     def get(self, request):
         usuario = request.user
         diario = Diario.objects.filter(usuario=usuario).order_by('-fecha').first()
+        diario_serializado = DiarioSerializer(diario)
         try:
             imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
         except (ValueError, AttributeError):
             imagen = request.build_absolute_uri('/media/imagenSinPerfil.jpg')
-        return Response({"usuario": usuario.first_name,
-                         "foto_perfil":imagen,
-                         "calorias_a_consumir": diario.calorias_a_Consumir,
-                         "calorias_Consumidas": diario.calorias_Consumidas,
-                         "proteinas_Consumidas":diario.proteinas_Consumidas,
-                         "proteinas_a_Consumir":diario.proteinas_a_Consumir,
-                         "grasas_Consumidas":diario.grasas_Consumidas,
-                         "grasas_a_Consumir":diario.grasas_a_Consumir,
-                         "carbohidratos_Consumidas":diario.carbohidratos_Consumidas,
-                         "carbohidratos_a_Consumir":diario.carbohidratos_a_Consumir})
+        return Response({"foto_perfil":imagen,
+                         "diario": diario_serializado.data,})
 
-class Diarios(ListAPIView):
+class Diarios(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = DiarioSerializer
 
-    def get_queryset(self):
-        return Diario.objects.filter(usuario=self.request.user) 
+    def get(self, request):
+        usuario = request.user
+        diarios = Diario.objects.filter(usuario=usuario).order_by('-fecha')[:5]
+
+        if not diarios:
+            return Response({"detalle": "No hay diarios."}, status=404)
+
+        resultado = []
+
+        try:
+            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
+        except (ValueError, AttributeError):
+            imagen = request.build_absolute_uri('/media/imagenSinPerfil.jpg')
+
+        for diario in diarios:
+            alimentos = AlimentoConsumido.objects.filter(diario=diario)
+            comidas = Comida.objects.filter(diario=diario)
+
+            # Agrupamos alimentos y comidas por parte del día
+            alimentos_agrupados = defaultdict(list)
+            for a in alimentos:
+                alimentos_agrupados[a.parte_del_dia.lower()].append(AlimentoConsumidoSerializer(a).data)
+
+            comidas_agrupadas = defaultdict(list)
+            for c in comidas:
+                comidas_agrupadas[c.parte_del_dia.lower()].append(ComidaSerializer(c).data)
+
+            resultado.append({
+                "fecha": diario.fecha,
+                "alimentos": alimentos_agrupados,
+                "comidas": comidas_agrupadas,
+            })
+
+        return Response({
+            "foto_perfil": imagen,
+            "diarios": resultado
+        })
     
 class Pesos(APIView):
     permission_classes = [IsAuthenticated]

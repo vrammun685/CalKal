@@ -2,7 +2,7 @@ import { useEffect, useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-
+import api from '../../../auth/axiosConfig';
 
 export default function FormularioCambiarContraseña({idioma}){
   const { uid, token } = useParams();
@@ -10,6 +10,7 @@ export default function FormularioCambiarContraseña({idioma}){
   const redireccion = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ password: '', confirm_password: '' });
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -28,7 +29,7 @@ export default function FormularioCambiarContraseña({idioma}){
     }
 
     try{
-      const response = await axios.post(`http://localhost:8000/api/CambiaContraseña/${uid}/${token}/`,
+      const response = await api.post(`CambiaContraseña/${uid}/${token}/`,
         { password: formData.password }
       );
       redireccion('/login');

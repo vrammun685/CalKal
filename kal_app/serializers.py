@@ -42,7 +42,9 @@ class PesoRegistradoSerializer(serializers.ModelSerializer):
 class DiarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diario
-        fields = ['id', 'usuario', 'fecha', 'calorias_Consumidas', 'calorias_a_Consumir']
+        fields = [
+            'id', 'usuario','fecha', 'calorias_Consumidas', 'calorias_a_Consumir', 'proteinas_Consumidas', 'proteinas_a_Consumir', 'grasas_Consumidas', 'grasas_a_Consumir', 'carbohidratos_Consumidas', 'carbohidratos_a_Consumir',
+        ]
 
 class ComidaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -66,10 +68,7 @@ class AlimentoConsumidoSerializer(serializers.ModelSerializer):
             'codigoAlimentos', 'calorias'
         ]
 
-class EjercicioRealizadoSerializer(serializers.ModelSerializer):
+class AlimentoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = EjercicioRealizado
-        fields = [
-            'id', 'diario', 'nombre_es', 'nombre_en', 
-            'calorias', 'codigoEjrcicio'
-        ]
+        model = Alimento
+        fields = '__all__'

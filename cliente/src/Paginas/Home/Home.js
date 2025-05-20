@@ -1,68 +1,89 @@
 import { useState, useEffect } from 'react';
 import MenuPrincipal from '../../Componentes/Menus/MenuPrincipal/MenuPrincipal';
-import axios from 'axios';
 import { GraficoCalorias } from '../../Componentes/Graficos/Grafico_Calorias/GraficoCalorias';
 import { MacroBar } from '../../Componentes/Graficos/Grafico_Macros/Grafico_Macros';
 import api from '../../auth/axiosConfig';
+import "./Home.css"
+import TarjetaDeAcciones from '../../Componentes/Tarjetas/Tarjeta';
 
-export default function Home(){
-    const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');
-    const [datosUsuario, setDatosUsuario] = useState(null);
-    
-    useEffect(() => {
-        api.get('/home/')
-            .then(res => {
-            setDatosUsuario(res.data);
-            console.log("Datos del usuario:", res.data);
-        })
-        .catch(err => {
-            console.error("Error al obtener datos del usuario:", err);
-        });
-    }, []);
+export default function Home() {
+  const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');
+  const [datos, setDatos] = useState({});
+  
+  const copiarAlPortapapeles = async (enlace, idioma) => {
+    try {
+      await navigator.clipboard.writeText(enlace);
+      alert(idioma === 'es' ? 'Enlace copiado al portapapeles' : 'Use Our API');
+    } catch (err) {
+      alert(idioma === 'es' ? 'Error al copiar el enlace' : 'Use Our API');
+      console.error(err);
+    }
+  };
 
-    return(
-        <div>
-            {datosUsuario && (
-                <div>
-                    <MenuPrincipal idioma={idioma} setIdioma={setIdioma} imagenPerfil={datosUsuario.foto_perfil}/>
-                    <GraficoCalorias consumidas = {datosUsuario.calorias_Consumidas} objetivo={datosUsuario.calorias_a_consumir}/>
-                    <div className="macro-bar-container d-flex flex-column flex-md-row justify-content-between align-items-stretch">
-                        <div className="flex-fill">
-                            <MacroBar
-                            idioma = {idioma}
-                            color = "EF6461"
-                            nombreES="Proteínas"
-                            nombreEN="Proteins"
-                            valor={datosUsuario.proteinas_Consumidas}
-                            maximo={datosUsuario.proteinas_a_Consumir}
-                            />
-                        </div>
-                        <div className="flex-fill">
-                            <MacroBar
-                            idioma = {idioma}
-                            color = "E4B363"
-                            nombreES="Grasas"
-                            nombreEN="Fats"
-                            valor={datosUsuario.grasas_Consumidas}
-                            maximo={datosUsuario.grasas_a_Consumir}
-                            />
-                        </div>
-                        <div className="flex-fill">
-                            <MacroBar
-                            idioma = {idioma}
-                            color = "4CAF87"
-                            nombreES="Carbohidratos"
-                            nombreEN="Carbohydrates"
-                            valor={datosUsuario.carbohidratos_Consumidas}
-                            maximo={datosUsuario.carbohidratos_a_Consumir}
-                            />
-                        </div>
+  useEffect(() => {
+    api.get('/home/')
+      .then(res => {
+        setDatos(res.data);
+        console.log("Datos del usuario:", res.data);
+      })
+      .catch(err => {
+        console.error("Error al obtener datos del usuario:", err);
+      });
+  }, []);
+
+ return (
+    <>
+    {datos && datos.diario && (
+    <div className="home position-relative z-1">
+        
+
+        <MenuPrincipal idioma={idioma} setIdioma={setIdioma} imagenPerfil={datos.foto_perfil} />
+
+        <div className="content-wrapper">
+            {/* Fila superior */}
+            <div className="row-custom top-row">
+                <div className="card-equal centrado">
+                    <MacroBar idioma={idioma} color="EF6461" nombreES="Proteínas" nombreEN="Proteins" valor={datos.diario.proteinas_Consumidas} maximo={datos.diario.proteinas_a_Consumir} />
+                    <MacroBar idioma={idioma} color="E4B363" nombreES="Grasas" nombreEN="Fats" valor={datos.diario.grasas_Consumidas} maximo={datos.diario.grasas_a_Consumir} />
+                    <MacroBar idioma={idioma} color="4CAF87" nombreES="Carbohidratos" nombreEN="Carbohydrates" valor={datos.diario.carbohidratos_Consumidas} maximo={datos.diario.carbohidratos_a_Consumir} />
+                </div>
+
+                <div className="card-equal centrado">
+                    <GraficoCalorias consumidas={datos.diario.calorias_Consumidas} objetivo={datos.diario.calorias_a_Consumir} />
+                </div>
+
+                <div className="card-equal centrado">
+                    <TarjetaDeAcciones idioma={idioma}/>
+                </div>
+            </div>
+
+            {/* Fila inferior */}
+            <div className="row-custom bottom-row fila-abajo">
+                <div className="card-equal abajo card-con-video">
+                    <video autoPlay muted loop playsInline className="background-video">
+                        <source src="/media/fondos/video4.mp4" type="video/mp4" />
+                        Tu navegador no soporta video HTML5.
+                    </video>
+                    <div className="contenido-sobre-video">
+                        <h2>{idioma === 'es' ? 'API' : 'Use Our API'}</h2>
+                        <p className='fs-4'>{idioma === 'es' ? 'Utiliza nuestra API para tus proyectos personales copiando el siguiente link' : 'Use our API for your personal projects by copying the following link'}</p>
+                        <span className="copiar-enlace fs-4" onClick={() => copiarAlPortapapeles("http://127.0.0.1:8000/api/alimentos/", idioma)}>{idioma === 'es' ? 'Copiar enlace de la API' : 'Copy API link'}</span>
                     </div>
                 </div>
-            )}
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className='ola'>
-                <path fill="#4CAF87" fill-opacity="1" d="M0,32L60,74.7C120,117,240,203,360,213.3C480,224,600,160,720,154.7C840,149,960,203,1080,229.3C1200,256,1320,256,1380,256L1440,256L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
-            </svg>
+
+                <div className="card-equal abajo card-con-gif">
+                    <div className="contenido-lateral">
+                        <h5>{idioma === 'es' ? 'Sección inferior 2' : 'Bottom Section 2'}</h5>
+                        <p>{idioma === 'es' ? 'Otra sección para información adicional.' : 'Another section for extra info.'}</p>
+                    </div>
+                    <div className="gif-lateral">
+                        <img src="/media/gif/Gif-Comida.gif" alt="GIF ilustrativo" />
+                    </div>
+                </div>
+            </div>
         </div>
-    )
+    </div>
+    )}
+    </>
+);
 }

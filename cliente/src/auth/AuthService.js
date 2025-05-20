@@ -13,7 +13,7 @@ export const checkToken = async () => {
 };
 
 export const refreshToken = () => {
-  return axios.post("http://localhost:8000/api/refresh/", null, {
+  return axios.post("http://localhost:8000/api/refreshtoken/", null, {
     withCredentials: true,
   });
 };

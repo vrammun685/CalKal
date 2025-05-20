@@ -12,55 +12,69 @@ export default function MenuPrincipal({idioma, setIdioma, imagenPerfil}) {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-white shadow-sm px-4">
-      <div className="container-fluid d-flex align-items-center">
+    <nav className="navbar navbar-expand-md bg-white shadow-sm px-4">
+  <div className="container-fluid d-flex align-items-center">
+    {/* LOGO IZQUIERDA */}
+    <div className="d-flex align-items-center me-3">
+      <img src="/media/logo.png" alt="logo" className="imagen-logo-esquina" />
+    </div>
 
-        {/* LOGO A LA IZQUIERDA */}
-        <div className="d-flex align-items-center me-3">
-          <img src="/media/logo.png" alt="logo" className="imagen-logo-esquina" />
-        </div>
+    {/* BOTÓN HAMBURGUESA */}
+    <button
+      className="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarContent"
+      aria-controls="navbarContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span className="navbar-toggler-icon"></span>
+    </button>
 
-        {/* BOTÓN HAMBURGUESA */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+    {/* MENÚ COLAPSABLE */}
+    <div className="collapse navbar-collapse flex-grow-1" id="navbarContent">
+      {/* CONTENEDOR FLEX PRINCIPAL */}
+      <div className="d-flex justify-content-between align-items-center w-100 position-relative">
+        {/* FANTASMA IZQUIERDA para compensar el ancho de la derecha */}
+        <div className="d-none d-lg-block" style={{ width: '180px' }}></div>
 
-        {/* MENÚ COLAPSABLE */}
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          {/* UL con botones centrados usando mx-auto y flex-grow-1 */}
-          <ul className="navbar-nav mx-auto mb-2 mb-lg-0 d-flex flex-grow-1 justify-content-center">
-            <li className="nav-item px-3">
-              <Link to="/home" className="nav-link fs-5 custom-link" aria-current="page">
-                {idioma === 'es' ? 'Inicio' : 'Home'}
-              </Link>
-            </li>
-            <li className="nav-item px-3">
-              <Link to="/diarios" className="nav-link fs-5 custom-link">
-                {idioma === 'es' ? 'Diarios' : 'Diaries'}
-              </Link>
-            </li>
-            <li className="nav-item px-3">
-              <Link to="/pesos" className="nav-link fs-5 custom-link">
-                {idioma === 'es' ? 'Pesos' : 'Weights'}
-              </Link>
-            </li>
-          </ul>
+        {/* MENÚ CENTRADO */}
+        <ul className="navbar-nav d-flex flex-row gap-3 justify-content-center mb-0 me-3 flex-wrap flex-md-nowrap">
+          <li className="nav-item">
+            <Link to="/home" className="nav-link fs-5 custom-link position-relative">
+              {idioma === 'es' ? 'Inicio' : 'Home'}
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/diarios" className="nav-link fs-5 custom-link position-relative">
+              {idioma === 'es' ? 'Diarios' : 'Diaries'}
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/pesos" className="nav-link fs-5 custom-link position-relative">
+              {idioma === 'es' ? 'Pesos' : 'Weights'}
+            </Link>
+          </li>
+        </ul>
 
-          {/* Selector idioma + Perfil a la derecha */}
-          <div className="d-flex align-items-center gap-3">
-            <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} />
-            <MenuPerfil idioma={idioma} imagenPerfil={imagenPerfil} />
-          </div>
+        {/* LADO DERECHO: Idioma + Perfil solo en desktop */}
+        <div className="d-none d-md-flex align-items-center gap-3">
+          <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} />
+          <MenuPerfil idioma={idioma} imagenPerfil={imagenPerfil} />
         </div>
       </div>
-    </nav>
+    </div>
+
+    {/* LADO DERECHO: Idioma + Perfil solo en móvil (fuera del collapse para que quede debajo del menú) */}
+    <div className="d-flex d-md-none justify-content-center gap-3 mt-3 w-100">
+      <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} />
+      <MenuPerfil idioma={idioma} imagenPerfil={imagenPerfil} />
+    </div>
+  </div>
+</nav>
+
+
+
   );
 }

@@ -31,7 +31,7 @@ export default function PaginaRegistro() {
 
   return(
     <div className='cartel-presentacion'>
-        <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} />
+        <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} className="cambioIdioma"/>
         <FormularioRegistro idioma={idioma}/>
     </div>
   );

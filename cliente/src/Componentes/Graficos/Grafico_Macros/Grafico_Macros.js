@@ -13,16 +13,10 @@ export function MacroBar({ nombreES, nombreEN, valor, maximo, color, idioma }) {
     color: color ? `#${color}` : undefined,
   };
 
-  // Si no se pasa color, usar lógica automática de colores
-  if (!color) {
-    if (porcentaje > 90 && porcentaje < 100) barraColor = "bg-warning";
-    if (porcentaje >= 100) barraColor = "bg-danger";
-  }
-
   return (
     <div className="macro-bar  py-3">
       <div className="macro-bar-header text-center">
-        <p className="fs-5" style={{ color: `#${color}` }}>{idioma === 'es' ? nombreES : nombreEN}</p>
+        <p className="titulo-macros" style={{ color: `#${color}` }}>{idioma === 'es' ? nombreES : nombreEN}</p>
         <div className="macro-bar-subtext">
           {valor}g / {maximo}g
         </div>

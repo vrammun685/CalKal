@@ -46,3 +46,9 @@ Color Secundario ---> #E4B363
 Fondo ----> #E8E9EB
 Letra ---> #313638
 Errores ----> #EF6461
+
+Que quiero que haga la pagina de Diaros quiero 5 desplegables donde veas las 3 comidas, los aperitivos y el ejercicio que haya si no hay pues nos jodimos y decimos que no hay alimento anadido todavia. Un panel para editar u poco mas 
+
+Para diarios necesito llevarme todos los alimentosCondumidos y comidas por diario 
+
+https://bentogrids.com/shots/cltgwuq2s0002p3kvfireey42 para pesos

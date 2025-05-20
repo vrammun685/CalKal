@@ -12,7 +12,7 @@ export default function PaginaLogin() {
 
     return(
         <div>
-            <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} />
+            <CambioIdioma idioma={idioma} onChangeIdioma={cambiarIdioma} className="cambioIdioma"/>
             <FormularioLogin idioma={idioma}/>
         </div>
     );

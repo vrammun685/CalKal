@@ -1,9 +1,9 @@
 import MenuPrincipal from '../../Componentes/Menus/MenuPrincipal/MenuPrincipal';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ListadoPesos from '../../Componentes/Listados/ListadoPesos/ListadoPesos';
-import { GraficoPesos } from '../../Componentes/Graficos/Grafico_Pesos/Grafico_Pesos';
+import FiltroPesos from '../../Componentes/Filtros/Filtro_Pesos/FiltroPesos';
 import api from '../../auth/axiosConfig';
+import "./Pesos.css";
 
 export default function PaginaPesos(){
     const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');
@@ -24,7 +24,7 @@ export default function PaginaPesos(){
 
     const eliminar = (pesoID) => {
         if (window.confirm("¿Estás seguro de que quieres eliminar este peso?")) {
-            axios.delete(`http://localhost:8000/api/pesos/${pesoID}/`,{withCredentials:true})
+            api.delete(`/pesos/${pesoID}/`)
             .then(res => {
                 console.log(res.data.mensaje);
                 setPesos(prev => prev.filter(p => p.id !== pesoID));
@@ -40,10 +40,9 @@ export default function PaginaPesos(){
     }
 
     return(
-        <div>
+        <div className='pesos'>
             <MenuPrincipal idioma={idioma} setIdioma={setIdioma} imagenPerfil={datosUsuario}/>
-            <GraficoPesos pesos={pesos}/>
-            <ListadoPesos idioma={idioma} pesos={pesos} eliminar={eliminar}/>
+            <FiltroPesos idioma={idioma} pesos={pesos} eliminar={eliminar} />
         </div>
     )
 }

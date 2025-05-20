@@ -153,7 +153,29 @@ class Diario(models.Model):
     def __str__(self):
         return f"{self.usuario.username} - {self.fecha}"
 
+class Alimento(models.Model):
+    MEDIDAS = [
+        ('g', 'Gramos'),
+        ('ml', 'Mililitros')
+        # Puedes agregar más según lo que manejes
+    ]
 
+    codigo = models.CharField(max_length=10, unique=True)
+    nombre_es = models.CharField(max_length=50)
+    nombre_en = models.CharField(max_length=50)
+    calorias = models.FloatField()
+    grasas = models.FloatField()
+    proteinas = models.FloatField()
+    carbohidratos = models.FloatField()
+    medida = models.CharField(max_length=20, choices=MEDIDAS, default='g')
+
+    class Meta:
+        verbose_name = 'Alimento'
+        verbose_name_plural = 'Alimentos'
+
+    def __str__(self):
+        return f"{self.nombre_es} ({self.codigo})"
+    
 class Comida(models.Model):
     PARTE_DIA =[
         ('Desayuno', 'Desayuno'),
@@ -163,8 +185,10 @@ class Comida(models.Model):
     ]
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='comidas')
     diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='comidas', null=True, blank=True)
+    nombre = models.CharField(max_length=20)
     parte_del_dia=models.CharField(max_length=30, choices=PARTE_DIA, default='Selecciona una opcion')
     numeroPersonas = models.IntegerField(default=1)
+    calorias = models.IntegerField() 
 
     class Meta:
         verbose_name = 'Comida'
@@ -173,23 +197,31 @@ class Comida(models.Model):
 
 class AlimentoComida(models.Model):
     comida = models.ForeignKey(Comida, on_delete=models.CASCADE, related_name='alimentos')
-    cantidad = models.FloatField()
-    nombre_es = models.CharField(max_length=20)
-    nombre_en = models.CharField(max_length=20)
-    medida = models.CharField(max_length=20)
-    grasas = models.FloatField()
-    proteinas = models.FloatField()
-    carbohidratos = models.FloatField()
-    codigoAlimentos = models.IntegerField()
+    alimento = models.ForeignKey(Alimento, on_delete=models.PROTECT)  # ← Referencia al alimento base
+    cantidad = models.FloatField()  # Cantidad usada en la comida
 
     class Meta:
         verbose_name = 'Ingrediente'
         verbose_name_plural = 'Ingredientes'
 
+    def __str__(self):
+        return f"{self.alimento.nombre_es} - {self.cantidad}{self.alimento.medida}"
+
+    def calorias_totales(self):
+        return (self.cantidad * self.alimento.calorias) / 100  # Asumiendo 100g como referencia
+
+    def grasas_totales(self):
+        return (self.cantidad * self.alimento.grasas) / 100
+
+    def proteinas_totales(self):
+        return (self.cantidad * self.alimento.proteinas) / 100
+
+    def carbohidratos_totales(self):
+        return (self.cantidad * self.alimento.carbohidratos) / 100
+
 
 class AlimentoConsumido(models.Model):
-
-    PARTE_DIA =[
+    PARTE_DIA = [
         ('Desayuno', 'Desayuno'),
         ('Almuerzo', 'Almuerzo'),
         ('Cena', 'Cena'),
@@ -197,29 +229,27 @@ class AlimentoConsumido(models.Model):
     ]
 
     diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='alimentos_consumidos')
-    parte_del_dia=models.CharField(max_length=30, choices=PARTE_DIA, default='Selecciona una opcion')
-    cantidad = models.FloatField()
-    nombre_es = models.CharField(max_length=20)
-    nombre_en = models.CharField(max_length=20)
-    medida = models.CharField(max_length=20)
-    grasas = models.FloatField()
-    proteinas = models.FloatField()
-    carbohidratos = models.FloatField()
-    codigoAlimentos = models.IntegerField()
-    calorias = models.FloatField()
+    alimento = models.ForeignKey(Alimento, on_delete=models.PROTECT)  # ← Enlace al alimento base
+    parte_del_dia = models.CharField(max_length=30, choices=PARTE_DIA, default='Otro')
+    cantidad = models.FloatField()  # Esto representa la cantidad consumida
 
     class Meta:
         verbose_name = 'Alimento Consumido'
         verbose_name_plural = 'Alimentos Consumidos'
 
+    def __str__(self):
+        return f"{self.alimento.nombre_es} - {self.cantidad}{self.alimento.medida} ({self.parte_del_dia})"
 
-class EjercicioRealizado(models.Model):
-    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='ejercicios_realizados')
-    nombre_es = models.CharField(max_length=20)
-    nombre_en = models.CharField(max_length=20)
-    calorias = models.FloatField()
-    codigoEjrcicio = models.IntegerField()
+    def calorias_totales(self):
+        return (self.cantidad * self.alimento.calorias) / 100 
+    
+    def grasas_totales(self):
+        return (self.cantidad * self.alimento.grasas) / 100
 
-    class Meta:
-        verbose_name = 'Ejercicio Realizado'
-        verbose_name_plural = 'Ejercicios Realizados'
+    def proteinas_totales(self):
+        return (self.cantidad * self.alimento.proteinas) / 100
+
+    def carbohidratos_totales(self):
+        return (self.cantidad * self.alimento.carbohidratos) / 100
+
+

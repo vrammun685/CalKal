@@ -9,6 +9,8 @@ urlpatterns = [
     path('api/solicitar-contraseña/', SolicitarCorreoPass.as_view(), name="SolicitarCorreoPass"),
     path('api/CambiaContraseña/<uidb64>/<token>/', CambiarContraseña.as_view(), name="CambiarContraseña"),
     path("api/logout/", Logout.as_view(), name="logout"),
+    path('api/check-username/', CheckUsername.as_view(), name='check-username'),
+    path('api/check-email/', CheckEmail.as_view(), name='check-email'),
 
     #Token
     path('api/checktoken/', CheckToken.as_view(), name="checkToken"),
@@ -19,6 +21,9 @@ urlpatterns = [
     path('api/diario/', Diarios.as_view(), name="Diarios"),
     path('api/pesos/', Pesos.as_view(), name='pesos'),
     path('api/pesos/<int:pk>/', Pesos.as_view(), name='pesoseliminar'),
+
+    #API
+    path('api/alimentos/', AlimentoListAPIView.as_view(), name='alimentos-list'),
 
 
 ]

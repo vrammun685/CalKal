@@ -4,7 +4,7 @@ import './Videofondo.css';
 const fondos = [
   '/media/fondos/video1.mp4',
   '/media/fondos/video2.mp4',
-  '/media/fondos/video4.mp4'
+  '/media/fondos/video3.mp4'
 ];
 
 export function FondoCambiante({ className }) {

@@ -1,5 +1,6 @@
 import { useEffect, useState} from 'react';
 import axios from 'axios';
+import api from '../../../auth/axiosConfig';
 
 export default function FormularioPedirEmail({idioma}){
   const [errors, setErrors] = useState({});
@@ -9,7 +10,7 @@ export default function FormularioPedirEmail({idioma}){
     e.preventDefault();
     try{
       setErrors({})
-      await axios.post('http://localhost:8000/api/solicitar-contraseña/', { email });
+      await api.post('solicitar-contraseña/', { email });
     }
     catch (error){
       if (error.response && error.response.status === 400) {

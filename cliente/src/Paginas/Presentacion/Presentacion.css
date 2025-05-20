@@ -87,29 +87,7 @@
   .boton-inicio:hover {
     background-color: #E4B363;
   }
-  
-  /* Flecha hacia abajo */
-  .flecha-abajo {
-    font-size: 7rem;
-    color: #4CAF87;
-    position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-decoration: none;
-    animation: fadeInUp 1s ease-out forwards, flechaBounce 2s infinite;
-    transition: color 0.5s ease;
-    
-  }
-  .flecha-abajo:hover {
-    color: #E4B363;
-    font-size: 7.2rem;
-  }
-  
-
-
-
-  
+   
   /* Sección de información */
   .descripcion-app {
     padding: 4rem 2rem;
@@ -165,6 +143,11 @@
     color: #E4B363;
 }
 
+.copiarEnlace {
+  color: rgb(0, 0, 0);
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 /*Animaciones*/
   @keyframes fadeInUp {

@@ -15,6 +15,7 @@ import Home from '../Paginas/Home/Home';
 import PaginaRecuperarContraseñaCorreo from '../Paginas/Recuperar_Contraseña/RecuperarContraseña';
 import PaginaEscribirNuevaContraseña from '../Paginas/Escribir_Nueva_Contraseña/EscribirContraseña';
 import PaginaPesos from '../Paginas/Pesos/Pesos';
+import PaginaDiarios from '../Paginas/Diarios/Diario';
 
 
 
@@ -30,9 +31,11 @@ export default function AppRouter() {
         <Route path="/registro/PoliticaPrivacidad" element={<PoliticaPrivacidad />} />
         <Route path="/RecuperarContraseña" element={<PaginaRecuperarContraseñaCorreo />} />
         <Route path="/RecuperarContraseña/EscribirContraseña/:uid/:token" element={<PaginaEscribirNuevaContraseña />} />
-        {/* Rutas públicas*/}
+        
+        {/* Rutas privadas*/}
         <Route path="/home" element={<RutaPrivada><Home /></RutaPrivada>} />
         <Route path="/pesos" element={<RutaPrivada><PaginaPesos /></RutaPrivada>} />
+        <Route path="/diarios" element={<RutaPrivada><PaginaDiarios /></RutaPrivada>} />
         {/* Rutas privadas
         <Route path="/datos" element={<RutaPrivada><MostrarDatos /></RutaPrivada>} />
            */}
