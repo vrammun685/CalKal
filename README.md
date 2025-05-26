@@ -52,3 +52,7 @@ Que quiero que haga la pagina de Diaros quiero 5 desplegables donde veas las 3 c
 Para diarios necesito llevarme todos los alimentosCondumidos y comidas por diario 
 
 https://bentogrids.com/shots/cltgwuq2s0002p3kvfireey42 para pesos
+
+0 2 * * * cd /ruta/a/carpetax && /ruta/a/carpetax/venv/bin/python manage.py crear_diarios --settings=mi_proyecto.settings.base >> logs/crear_diarios.log 2>&1 comando para cron en produccion necesito un sitio que tenga terminal para ejecutar esto
+
+Cambiar link para produccion del correo del cambiar contrasena

@@ -21,9 +21,13 @@ urlpatterns = [
     path('api/diario/', Diarios.as_view(), name="Diarios"),
     path('api/pesos/', Pesos.as_view(), name='pesos'),
     path('api/pesos/<int:pk>/', Pesos.as_view(), name='pesoseliminar'),
-
+    path('api/perfil/', Perfil.as_view(), name="perfil"),
+    path('api/diarios/crearAlimento/', AlimentoConsumidoCrear.as_view(), name='alimentos-list'),
+  
     #API
     path('api/alimentos/', AlimentoListAPIView.as_view(), name='alimentos-list'),
 
+    #ADMIN
+    path('api/paneladmin/', admin_panel.as_view(), name='admin-panel'),
 
 ]

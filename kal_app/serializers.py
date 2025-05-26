@@ -4,8 +4,17 @@ from .models import *
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id','username','first_name','last_name', 'email','altura', 'edad', 'peso','genero', 'objetivo', 'actividad','imagen_Perfil', 'notificaciones', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = [
+            'id', 'username', 'first_name', 'last_name', 'email',
+            'altura', 'edad', 'peso', 'genero', 'objetivo', 'actividad',
+            'imagen_Perfil', 'notificaciones', 'password',
+            'is_staff', 'is_superuser'
+        ]
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'is_staff': {'read_only': False},
+            'is_superuser': {'read_only': False}
+        }
 
     def validate_username(self, value):
         if Usuario.objects.filter(username=value).exists():
@@ -21,6 +30,13 @@ class UsuarioSerializer(serializers.ModelSerializer):
         user = Usuario.objects.create_user(**validated_data)
         return user
 
+class UsuarioEditarPerfilSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField()
+    email = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Usuario
+        fields = ['username', 'email','first_name', 'last_name', 'peso', 'altura', 'edad', 'genero', 'objetivo', 'actividad','notificaciones']
 
 class LoginSerializer(serializers.Serializer):
     usuario = serializers.CharField()

@@ -1,7 +1,7 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Area } from 'recharts';
 
-export function GraficoPesos({ pesos }) {
+export default function GraficoPesos({ pesos }) {
   const datosOrdenados = [...pesos].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
   const datosGrafico = datosOrdenados.map(peso => ({

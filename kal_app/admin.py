@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import AlimentoComida, AlimentoConsumido, Comida, Usuario, Diario, PesoRegistrado, Alimento
+from .models import AlimentoComida, AlimentoConsumido, Comida, Usuario, Diario, PesoRegistrado, Alimento, ComidaConsumida
 
 # Register your models here.
 class UsuarioAdmin(UserAdmin):
@@ -19,3 +19,4 @@ admin.site.register(Usuario, UsuarioAdmin),
 admin.site.register(Diario),
 admin.site.register(PesoRegistrado),
 admin.site.register(Alimento),
+admin.site.register(ComidaConsumida),

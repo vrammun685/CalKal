@@ -24,29 +24,37 @@ export function FormularioLogin({ idioma }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const data = new FormData();
-    for (const key in formData) {
-      if (formData[key] !== undefined && formData[key] !== null) {
-        data.append(key, formData[key]);
-      }
+  const data = new FormData();
+  for (const key in formData) {
+    if (formData[key] !== undefined && formData[key] !== null) {
+      data.append(key, formData[key]);
     }
+  }
 
-    try {
-      const response = await api.post('login/', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-    login()
+  try {
+    const response = await api.post('login/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    login(); // Asumo que aquí guardas token y estado logueado
+
     setErrors({});
-    redireccion('/home');
-    } catch (error) {
-      setErrors({
-        es: 'Usuario o Contraseña incorrectos',
-        en: 'User or password invalid'
-      });
+
+    if (response.data.is_admin) {
+      redireccion('/admin'); // Redirige admin a panel admin
+    } else {
+      redireccion('/home'); // Redirige usuario normal a home
     }
-  };
+
+  } catch (error) {
+    setErrors({
+      es: 'Usuario o Contraseña incorrectos',
+      en: 'User or password invalid'
+    });
+  }
+};
 
   return (
     <div className="login-container d-flex justify-content-center align-items-center">

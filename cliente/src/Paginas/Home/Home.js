@@ -4,7 +4,7 @@ import { GraficoCalorias } from '../../Componentes/Graficos/Grafico_Calorias/Gra
 import { MacroBar } from '../../Componentes/Graficos/Grafico_Macros/Grafico_Macros';
 import api from '../../auth/axiosConfig';
 import "./Home.css"
-import TarjetaDeAcciones from '../../Componentes/Tarjetas/Tarjeta';
+import CarruselDeTarjetas from '../../Componentes/carrusel/Carrusel';
 
 export default function Home() {
   const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');
@@ -53,7 +53,7 @@ export default function Home() {
                 </div>
 
                 <div className="card-equal centrado">
-                    <TarjetaDeAcciones idioma={idioma}/>
+                    <CarruselDeTarjetas idioma={idioma} />
                 </div>
             </div>
 

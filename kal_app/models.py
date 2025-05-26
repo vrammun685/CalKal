@@ -68,47 +68,49 @@ class Usuario(AbstractUser):
         return math.ceil(calorias)
     
     def calcular_Proteinas(self):
-        calorias = self.calcular_Calorias()
+        if not self.peso or not self.objetivo:
+            return None
 
-        if(self.objetivo == 'Perder peso'):
-            calorias_proteinas = calorias*35/100
-        elif(self.objetivo == 'Ganar peso'):
-            calorias_proteinas = calorias*25/100
+        if self.objetivo == 'Perder peso':
+            gramos_por_kg = 2.0  # un rango alto para preservar músculo
+        elif self.objetivo == 'Ganar peso':
+            gramos_por_kg = 1.6  # suficiente para hipertrofia
         else:
-            calorias_proteinas = calorias*20/100 
-        
-        proteinas = calorias_proteinas/4
-        
+            gramos_por_kg = 1.2  # mantenimiento
+
+        proteinas = self.peso * gramos_por_kg
         return round(proteinas, 1)
     
     def calcular_Grasas(self):
-        calorias = self.calcular_Calorias()
+        if not self.peso or not self.objetivo:
+            return None
 
-        if(self.objetivo == 'Perder peso'):
-            calorias_grasas = calorias*25/100
-        elif(self.objetivo == 'Ganar peso'):
-            calorias_grasas = calorias*25/100
+        # Gramos por kg de grasa, aproximados
+        if self.objetivo == 'Perder peso':
+            gramos_por_kg = 0.8
+        elif self.objetivo == 'Ganar peso':
+            gramos_por_kg = 1.0
         else:
-            calorias_grasas = calorias*30/100 
-        
-        grasas = calorias_grasas/9
-        
+            gramos_por_kg = 0.9
+
+        grasas = self.peso * gramos_por_kg
         return round(grasas, 1)
-    
-    def calcular_Carbohidratos(self):
-        calorias = self.calcular_Calorias()
 
-        if(self.objetivo == 'Perder peso'):
-            calorias_carbohidratos = calorias*40/100
-        elif(self.objetivo == 'Ganar peso'):
-            calorias_carbohidratos = calorias*50/100
+
+    def calcular_Carbohidratos(self):
+        if not self.peso or not self.objetivo:
+            return None
+
+        # Gramos por kg de carbohidratos, aproximados
+        if self.objetivo == 'Perder peso':
+            gramos_por_kg = 2.5
+        elif self.objetivo == 'Ganar peso':
+            gramos_por_kg = 4.0
         else:
-            calorias_carbohidratos = calorias*50/100 
-        
-        carbohidratos = calorias_carbohidratos/4
-        
+            gramos_por_kg = 3.0
+
+        carbohidratos = self.peso * gramos_por_kg
         return round(carbohidratos, 1)
-    
 
 
 class PesoRegistrado(models.Model):
@@ -175,24 +177,46 @@ class Alimento(models.Model):
 
     def __str__(self):
         return f"{self.nombre_es} ({self.codigo})"
-    
+
 class Comida(models.Model):
+    
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='comidas')   
+    nombre = models.CharField(max_length=20)
+    numeroPorciones = models.FloatField(default=1)
+    calorias = models.FloatField() 
+    proteinas = models.FloatField()
+    grasas = models.FloatField()
+    carbohidratos = models.FloatField()
+
+
+    class Meta:
+        verbose_name = 'Comida'
+        verbose_name_plural = 'Comidas'
+
+class ComidaConsumida(models.Model):
     PARTE_DIA =[
         ('Desayuno', 'Desayuno'),
         ('Almuerzo', 'Almuerzo'),
         ('Cena', 'Cena'),
         ('Otro', 'Otro')
     ]
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='comidas')
-    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='comidas', null=True, blank=True)
-    nombre = models.CharField(max_length=20)
-    parte_del_dia=models.CharField(max_length=30, choices=PARTE_DIA, default='Selecciona una opcion')
-    numeroPersonas = models.IntegerField(default=1)
-    calorias = models.IntegerField() 
 
-    class Meta:
-        verbose_name = 'Comida'
-        verbose_name_plural = 'Comidas'
+    parte_del_dia=models.CharField(max_length=30, choices=PARTE_DIA, default='Selecciona una opcion')
+    diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='comidas',)
+    comida= models.ForeignKey(Comida, on_delete=models.PROTECT)
+    porcion_a_comer= models.FloatField()
+
+    def calorias_totales(self):
+        return (self.comida.calorias * self.porcion_a_comer) / self.comida.numeroPorciones  # Asumiendo 100g como referencia
+
+    def grasas_totales(self):
+        return (self.comida.grasas * self.porcion_a_comer) / self.comida.numeroPorciones
+
+    def proteinas_totales(self):
+        return (self.comida.proteinas * self.porcion_a_comer) / self.comida.numeroPorciones
+
+    def carbohidratos_totales(self):
+        return (self.comida.carbohidratos * self.porcion_a_comer) / self.comida.numeroPorciones
 
 
 class AlimentoComida(models.Model):

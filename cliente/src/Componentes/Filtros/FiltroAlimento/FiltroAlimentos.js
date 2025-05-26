@@ -1,6 +1,6 @@
 import React from "react";
 
-export function FiltroAlimentos({ filtro, setFiltro }) {
+export default function FiltroAlimentos({ filtro, setFiltro }) {
     return (
       <div name="filtro">
         <input

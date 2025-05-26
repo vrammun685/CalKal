@@ -39,7 +39,7 @@ export default function MenuPerfil({ idioma, imagenPerfil }) {
       />
       {open && (
         <div className="perfil-menu">
-          <Link to="/editarPerfil">{idioma === 'es' ? 'Editar Perfil' : 'Edit profile'}</Link>
+          <Link to="/perfil">{idioma === 'es' ? 'Perfil' : 'Profile'}</Link>
           <button onClick={CerrarSesion}>{idioma === 'es' ? 'Cerrar Sesion' : 'Log out'}</button>
         </div>
       )}
