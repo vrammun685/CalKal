@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/alimentos/', AlimentoListAPIView.as_view(), name='alimentos-list'),
 
     #ADMIN
-    path('api/paneladmin/', admin_panel.as_view(), name='admin-panel'),
+    path('api/paneladmin/usuarios/', admin_panel_usuarios.as_view(), name='admin-panel'),
+    path('api/paneladmin/alimentos/', admin_panel_alimentos.as_view(), name='admin-panel'),
 
 ]

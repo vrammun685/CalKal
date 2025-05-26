@@ -412,7 +412,7 @@ class Perfil(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class admin_panel(APIView):
+class admin_panel_usuarios(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
@@ -426,3 +426,13 @@ class admin_panel(APIView):
             "usuarios": usuarios_serializados,
             "alimentos": alimentos_serializados
         }, status=status.HTTP_200_OK)
+    
+class admin_panel_alimentos(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+       
+        alimentos = Alimento.objects.all()
+        alimentos_serializados = AlimentoSerializer(alimentos, many=True).data
+
+        return Response(alimentos_serializados, status=status.HTTP_200_OK)
