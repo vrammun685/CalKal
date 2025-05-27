@@ -1,5 +1,4 @@
-import { useEffect, useState} from 'react';
-import axios from 'axios';
+import { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import api from '../../../auth/axiosConfig';
@@ -29,7 +28,7 @@ export default function FormularioCambiarContraseña({idioma}){
     }
 
     try{
-      const response = await api.post(`CambiaContraseña/${uid}/${token}/`,
+      await api.post(`CambiaContraseña/${uid}/${token}/`,
         { password: formData.password }
       );
       redireccion('/login');

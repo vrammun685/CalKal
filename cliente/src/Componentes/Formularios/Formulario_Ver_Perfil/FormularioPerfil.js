@@ -201,6 +201,7 @@ export default function FormularioPerfil({ datosUsuarioInicial, imagenPerfil, id
         <button className="btn btn-warning" onClick={handleSolicitarCambioPassword}>
           Cambiar contraseña
         </button>
+        {errors.es && <div className="alert alert-danger">{errors[idioma]}</div>}
         <button className="btn btn-danger" onClick={handleEliminarCuenta}>
           Eliminar cuenta
         </button>
