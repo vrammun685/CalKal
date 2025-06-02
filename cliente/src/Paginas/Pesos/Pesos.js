@@ -4,7 +4,7 @@ import api from '../../auth/axiosConfig';
 import FiltroPesos from '../../Componentes/Filtros/Filtro_Pesos/FiltroPesos';
 import GraficoPesos from '../../Componentes/Graficos/Grafico_Pesos/Grafico_Pesos';
 import ListadoPesos from '../../Componentes/Listados/ListadoPesos/ListadoPesos';
-import FormularioPeso from '../../Componentes/Formularios/FormularioPesos/FormularioPesos';
+import ModalFormularioPeso from '../../Componentes/Modal/Modal_Peso/Modal_peso';
 import "./Pesos.css";
 
 export default function PaginaPesos() {
@@ -13,17 +13,24 @@ export default function PaginaPesos() {
   const [datosUsuario, setDatosUsuario] = useState(null);
   const [filtro, setFiltro] = useState('todo');
   const [pesoEditar, setPesoEditar] = useState(null);
-  
+  const [mostrarModalPeso, setMostrarModalPeso] = useState(false);
+
   const editarPeso = async (peso) => {
     try {
       const res = await api.get(`/pesos/?pk=${peso.id}`);
       const pesoCompleto = res.data;
 
       setPesoEditar(pesoCompleto);
+      setMostrarModalPeso(true);
     } catch (error) {
       console.error('Error al obtener el peso para editar:', error);
       alert('No se pudo cargar el peso');
     }
+  };
+
+  const crearPeso = () => {
+    setPesoEditar(null);
+    setMostrarModalPeso(true);
   };
 
   useEffect(() => {
@@ -51,7 +58,6 @@ export default function PaginaPesos() {
     }
   };
 
-  // Función para calcular la fecha límite según filtro
   const fechaLimite = useMemo(() => {
     const hoy = new Date();
     switch (filtro) {
@@ -68,7 +74,6 @@ export default function PaginaPesos() {
     }
   }, [filtro]);
 
-  // Filtrar pesos según fecha límite
   const pesosFiltrados = useMemo(() => {
     if (!fechaLimite) return pesos;
     return pesos.filter(peso => new Date(peso.fecha) >= fechaLimite);
@@ -78,13 +83,31 @@ export default function PaginaPesos() {
     <div className='pesos'>
       <MenuPrincipal idioma={idioma} setIdioma={setIdioma} imagenPerfil={datosUsuario} />
       
-      {/* Selector de filtro */}
       <FiltroPesos filtro={filtro} setFiltro={setFiltro} idioma={idioma} />
 
-      {/* Gráfico y listado con pesos filtrados */}
       <GraficoPesos pesos={pesosFiltrados} />
+
+      {/* Botón para abrir modal de creación */}
+      <button className="btn btn-primary mb-3" onClick={crearPeso}>
+        Nuevo Registro de Peso
+      </button>
+
+      {/* Listado de pesos */}
       <ListadoPesos idioma={idioma} pesos={pesosFiltrados} eliminar={eliminar} editar={editarPeso} />
-      <FormularioPeso pesos={pesos} setPesos={setPesos} pesoEditar={pesoEditar} setPesoEditar={setPesoEditar} />
+
+      {/* Modal con formulario para crear/editar peso */}
+      {mostrarModalPeso && (
+        <ModalFormularioPeso
+          
+          show={mostrarModalPeso}
+          cerrar={() => setMostrarModalPeso(false)}
+          pesos={pesos}
+          setPesos={setPesos}
+          pesoEditar={pesoEditar}
+          setPesoEditar={setPesoEditar}
+          idioma={idioma}
+        />
+      )}
     </div>
   );
 }

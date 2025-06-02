@@ -3,7 +3,6 @@ from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-
 from kal_project import settings
 from .models import Usuario, Diario, PesoRegistrado, AlimentoConsumido, Comida, Alimento
 from .serializers import *
@@ -193,6 +192,16 @@ class CambiarContraseña(APIView):
         else:
             return Response({'error': 'Token inválido o expirado'}, status=status.HTTP_400_BAD_REQUEST)
 
+class SolicitarImagenPerfil(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        usuario = request.user
+        try:
+            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
+        except (ValueError, AttributeError):
+            imagen = request.build_absolute_uri('/imagenSinPerfil.jpg')
+        return Response({"foto_perfil":imagen})
 
 class Home(APIView):
     permission_classes = [IsAuthenticated]
@@ -201,12 +210,7 @@ class Home(APIView):
         usuario = request.user
         diario = Diario.objects.filter(usuario=usuario).order_by('-fecha').first()
         diario_serializado = DiarioSerializer(diario)
-        try:
-            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
-        except (ValueError, AttributeError):
-            imagen = request.build_absolute_uri('/media/imagenSinPerfil.jpg')
-        return Response({"foto_perfil":imagen,
-                         "diario": diario_serializado.data,})
+        return Response({"diario": diario_serializado.data,})
 
 class Diarios(APIView):
     permission_classes = [IsAuthenticated]
@@ -217,11 +221,6 @@ class Diarios(APIView):
 
         if not diarios:
             return Response({"detalle": "No hay diarios."}, status=404)
-
-        try:
-            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
-        except (ValueError, AttributeError):
-            imagen = request.build_absolute_uri('/media/imagenSinPerfil.jpg')
 
         resultado = []
 
@@ -261,7 +260,6 @@ class Diarios(APIView):
             })
 
         return Response({
-            "foto_perfil": imagen,
             "diarios": resultado
         })
 
@@ -317,11 +315,7 @@ class Pesos(APIView):
         pesos = PesoRegistrado.objects.filter(usuario=usuario)
         serializer = PesoRegistradoSerializer(pesos, many=True, context={'request': request})
         print("pesos GET desde todos")
-        try:
-            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
-        except (ValueError, AttributeError):
-            imagen = request.build_absolute_uri('/media/imagenSinPerfil.jpg')
-        return Response({"pesos": serializer.data, "foto_perfil": imagen})
+        return Response({"pesos": serializer.data})
     
     def delete(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
@@ -387,18 +381,23 @@ class Perfil(APIView):
 
     def get(self, request):
         usuario = request.user
-        serializer = UsuarioEditarPerfilSerializer(usuario)
-        try:
-            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
-        except (ValueError, AttributeError):
-            imagen = request.build_absolute_uri('/media/imagenSinPerfil.jpg')
-        return Response({'Datos_Usuario': serializer.data,
-                        'imagen_perfil':imagen})
+        serializer = UsuarioEditarPerfilSerializer(usuario, context={'request': request})
+        return Response({'Datos_Usuario': serializer.data})
     
     def delete(self, request):
         user = request.user
+
+        # Creamos la respuesta primero
+        response = Response({"detail": "Cuenta eliminada correctamente"}, status=204)
+
+        # Borramos las cookies
+        response.delete_cookie('token')
+        response.delete_cookie('refresh_token')
+
+        # Eliminamos el usuario
         user.delete()
-        return Response({"detail": "Cuenta eliminada correctamente"}, status=204)
+
+        return response
     
     def put(self, request):
         user = request.user
@@ -411,6 +410,7 @@ class Perfil(APIView):
             actualizarTrasActualizar(usuario_actualizado)
             # Si envían imagen, la actualizamos aparte
             imagen = request.FILES.get('imagen_Perfil')
+            
             if imagen:
                 user.imagen_Perfil = imagen
                 user.save()
@@ -444,3 +444,120 @@ class admin_panel_alimentos(APIView):
         alimentos_serializados = AlimentoSerializer(alimentos, many=True).data
 
         return Response(alimentos_serializados, status=status.HTTP_200_OK)
+    
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        try:
+            alimento=Alimento.objects.get(pk=pk)
+            alimento.delete()
+            return Response({'mensaje':'Alimento eliminado'}, status=status.HTTP_200_OK)
+        except Alimento.DoesNotExist:
+            return Response({'error':'Alimento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        try:
+            alimento = Alimento.objects.get(pk=pk)
+        except Alimento.DoesNotExist:
+            return Response({'error': 'Alimento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AlimentoSerializer(alimento, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def post(self, request):        
+        data = request.data.copy()
+
+            # Obtener el último código existente
+        ultimo_alimento = Alimento.objects.order_by('-codigo').first()
+            
+        if ultimo_alimento and ultimo_alimento.codigo.isdigit():
+            nuevo_codigo = str(int(ultimo_alimento.codigo) + 1).zfill(len(ultimo_alimento.codigo))
+        else:
+            # Si no hay registros o el código no es numérico, empieza desde 0001
+            nuevo_codigo = '0001'
+
+        data['codigo'] = nuevo_codigo
+
+        serializer = AlimentoSerializer(data=data)
+        if serializer.is_valid():
+            alimento = serializer.save()
+            return Response(AlimentoSerializer(alimento).data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Recetas(APIView):
+    def get(self, request):
+        usuario = request.user
+        listacomida = Comida.objects.filter(usuario=usuario)
+        comidas_serializadas = ComidaSerializer(listacomida, many=True).data
+        return Response({'Comidas': comidas_serializadas})
+
+class IngredientesDeReceta(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            receta = Comida.objects.get(id=pk, usuario=request.user)
+        except Comida.DoesNotExist:
+            return Response({'error': 'Receta no encontrada.'}, status=404)
+
+        ingredientes = AlimentoComida.objects.filter(comida=receta)
+        serializer = AlimentoComidaSerializer(ingredientes, many=True)
+        return Response({'ingredientes': serializer.data})
+
+class ComidaCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        comida = Comida.objects.get(id=pk, usuario=request.user)
+        serializer = ComidaEditarSerializer(comida)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ComidaCreateSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            comida = serializer.save()
+            return Response({'mensaje': 'Comida creada correctamente', 'comida_id': comida.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk):
+        comida = Comida.objects.get(id=pk, usuario=request.user)
+        serializer = ComidaCreateSerializer(instance=comida, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            # Borrar los ingredientes anteriores
+            comida.alimentos.all().delete()
+
+            # Actualizar campos básicos
+            validated_data = serializer.validated_data
+            comida.nombre = validated_data['nombre']
+            comida.numeroPorciones = validated_data['numeroPorciones']
+
+            total_cal = total_prot = total_grasas = total_carb = 0
+
+            for item in validated_data['ingredientes']:
+                alimento = Alimento.objects.get(pk=item['alimento_id'])
+                cantidad = item['cantidad']
+
+                ingrediente = AlimentoComida.objects.create(
+                    comida=comida,
+                    alimento=alimento,
+                    cantidad=cantidad
+                )
+
+                total_cal += ingrediente.calorias_totales()
+                total_prot += ingrediente.proteinas_totales()
+                total_grasas += ingrediente.grasas_totales()
+                total_carb += ingrediente.carbohidratos_totales()
+
+            comida.calorias = total_cal
+            comida.proteinas = total_prot
+            comida.grasas = total_grasas
+            comida.carbohidratos = total_carb
+            comida.save()
+
+            return Response({'mensaje': 'Comida actualizada correctamente'}, status=status.HTTP_200_OK)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

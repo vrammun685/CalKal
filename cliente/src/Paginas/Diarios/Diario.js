@@ -6,14 +6,12 @@ import ListaAlimentos from '../../Componentes/Listados/ListadoAlimentos/ListadoA
 
 export default function PaginaDiarios() {
   const [idioma, setIdioma] = useState(localStorage.getItem("idioma") || "es");
-  const [datosUsuario, setDatosUsuario] = useState(null);
   const [diarios, setDiarios] = useState([]);
   const [indiceActual, setIndiceActual] = useState(0);
 
   useEffect(() => {
     api.get("/diario/")
       .then((res) => {
-        setDatosUsuario(res.data.foto_perfil);
         setDiarios(res.data.diarios || []);
         setIndiceActual(0);
         console.log("Datos recibidos:", res.data);
@@ -29,7 +27,7 @@ export default function PaginaDiarios() {
 
   return (
     <div>
-      <MenuPrincipal idioma={idioma} setIdioma={setIdioma} imagenPerfil={datosUsuario} />
+      <MenuPrincipal idioma={idioma} setIdioma={setIdioma} />
 
       <ListadoDiarios
         diarios={diarios}

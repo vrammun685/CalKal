@@ -9,6 +9,7 @@ export default function ListaAlimentos({ idioma }) {
   const [cargando, setCargando] = useState(true);
   const [alimentoModal, setAlimentoModal] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [procesando, setProcesando] = useState(false);
 
   // Paginación
   const [paginaActual, setPaginaActual] = useState(1);
@@ -54,9 +55,20 @@ export default function ListaAlimentos({ idioma }) {
     setAlimentoModal(null);
   };
 
-  const procesarAlimento = (data) => {
-    console.log("Alimento a añadir:", data);
-    cerrarModal();
+  const procesarAlimento = async (data) => {
+    if (procesando) return;
+
+    setProcesando(true);
+
+    try {
+      console.log("Alimento a añadir:", data);
+      // Aquí podrías agregar lógica para llamar al backend, actualizar estado, etc.
+      cerrarModal();
+    } catch (error) {
+      console.error('Error al procesar alimento:', error);
+    } finally {
+      setProcesando(false);
+    }
   };
 
   if (cargando) return <p>Cargando alimentos...</p>;
@@ -138,6 +150,7 @@ export default function ListaAlimentos({ idioma }) {
         onSubmit={procesarAlimento}
         alimento={alimentoModal}
         idioma={idioma}
+        procesando={procesando}
       />
 
     </div>

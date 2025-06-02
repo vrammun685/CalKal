@@ -1,9 +1,27 @@
 import './ListadoDiarios.css'; // Tu CSS personalizado
+import Loading from '../../../Paginas/Loading/Loading'
 
 export default function ListadoDiarios({ diarios, indiceActual, cambiarDia }) {
   const diarioActual = diarios[indiceActual];
 
-  const renderParteDelDia = (titulo, diarioParte) => {
+  const handleEditarAlimento = (alimento) => {
+    // Aquí deberías abrir un modal o navegar a una página de edición
+    console.log("Editar alimento:", alimento);
+  };
+
+  const handleEliminarAlimento = (parte, idx) => {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar este alimento?")) return;
+
+    // Copia profunda para evitar mutación directa
+    const nuevosDiarios = JSON.parse(JSON.stringify(diarios));
+    nuevosDiarios[indiceActual].alimentos[parte].splice(idx, 1);
+    // Idealmente aquí deberías llamar a una API para persistir el cambio
+
+    console.log("Alimento eliminado en parte:", parte, "índice:", idx);
+    // Este set solo simula el cambio; deberías elevar el estado si quieres actualizar realmente
+  };
+
+  const renderParteDelDia = (titulo, diarioParte, parte) => {
     const alimentos = diarioParte.alimentos || [];
     const comidas = diarioParte.comidas || [];
 
@@ -29,6 +47,7 @@ export default function ListadoDiarios({ diarios, indiceActual, cambiarDia }) {
                       <th>Proteinas</th>
                       <th>Grasas</th>
                       <th>Carbohidratos</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -40,6 +59,20 @@ export default function ListadoDiarios({ diarios, indiceActual, cambiarDia }) {
                         <td>{alimento.proteinas}</td>
                         <td>{alimento.grasas}</td>
                         <td>{alimento.carbohidratos}</td>
+                        <td>
+                          <button
+                            className="btn btn-sm btn-warning me-2"
+                            onClick={() => handleEditarAlimento(alimento)}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            className="btn btn-sm btn-danger"
+                            onClick={() => handleEliminarAlimento(parte, idx)}
+                          >
+                            Eliminar
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -57,7 +90,9 @@ export default function ListadoDiarios({ diarios, indiceActual, cambiarDia }) {
                   <ul className="mt-2">
                     {Array.isArray(comida.alimentos) && comida.alimentos.length > 0 ? (
                       comida.alimentos.map((ing, i) => (
-                        <li key={i}>{ing.nombre} - {ing.cantidad} {ing.medida}</li>
+                        <li key={i}>
+                          {ing.nombre} - {ing.cantidad} {ing.medida}
+                        </li>
                       ))
                     ) : (
                       <li>No hay ingredientes</li>
@@ -72,7 +107,7 @@ export default function ListadoDiarios({ diarios, indiceActual, cambiarDia }) {
     );
   };
 
-  if (!diarioActual) return <p className="text-center">Cargando diarios...</p>;
+  if (!diarioActual) return <Loading />;
 
   return (
     <div className="container py-4">
@@ -94,8 +129,9 @@ export default function ListadoDiarios({ diarios, indiceActual, cambiarDia }) {
             parte.charAt(0).toUpperCase() + parte.slice(1),
             {
               alimentos: diarioActual.alimentos?.[parte] || [],
-              comidas: diarioActual.comidas?.[parte] || []
-            }
+              comidas: diarioActual.comidas?.[parte] || [],
+            },
+            parte // pasamos el nombre de la parte
           )}
         </div>
       ))}
