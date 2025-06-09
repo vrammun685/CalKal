@@ -3,7 +3,7 @@ import  FiltroAlimentos  from '../../Filtros/FiltroAlimento/FiltroAlimentos';
 import api from '../../../auth/axiosConfig';
 import ModalAnadirAlimento from '../../Modal/Modal_Alimento/ModalAlimento';
 
-export default function ListaAlimentos({ idioma }) {
+export default function ListaAlimentos({ idioma, onAgregar  }) {
   const [filtro, setFiltro] = useState('');
   const [alimentos, setAlimentos] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -61,8 +61,8 @@ export default function ListaAlimentos({ idioma }) {
     setProcesando(true);
 
     try {
-      console.log("Alimento a añadir:", data);
-      // Aquí podrías agregar lógica para llamar al backend, actualizar estado, etc.
+      // aquí no añades localmente, solo notificas al padre que recargue
+      onAgregar(); // la función en el padre recarga todo desde backend
       cerrarModal();
     } catch (error) {
       console.error('Error al procesar alimento:', error);
@@ -70,6 +70,7 @@ export default function ListaAlimentos({ idioma }) {
       setProcesando(false);
     }
   };
+
 
   if (cargando) return <p>Cargando alimentos...</p>;
 

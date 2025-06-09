@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../../auth/axiosConfig";
 import "./FormularioPerfil.css";
 import { useNavigate } from 'react-router-dom';
+import ModalConfirmacion from '../../Modal/Modal_Confirmacion/ModalConfirmacion';
 
 export default function FormularioPerfil({ datosUsuarioInicial, imagenPerfil, idioma }) {
   const [datosUsuario, setDatosUsuario] = useState(datosUsuarioInicial);
@@ -9,6 +10,8 @@ export default function FormularioPerfil({ datosUsuarioInicial, imagenPerfil, id
   const [preview, setPreview] = useState(imagenPerfil);
   const [errors, setErrors] = useState({});
   const redireccion = useNavigate();
+  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
+
 
   const traducciones = {
     username: { es: "Nombre de usuario", en: "Username" },
@@ -99,14 +102,11 @@ export default function FormularioPerfil({ datosUsuarioInicial, imagenPerfil, id
   };
 
   const handleEliminarCuenta = () => {
-    if (window.confirm("⚠️ ¿Estás seguro de que deseas eliminar tu cuenta? Esta acción es irreversible.")) {
-      api.delete("/perfil/")
-        .then(() => {
-          alert("👋 Cuenta eliminada correctamente");
-          redireccion('/login');
-        })
-        .catch(() => alert("❌ Error al eliminar la cuenta"));
-    }
+    api.delete("/perfil/")
+      .then(() => {
+        redireccion('/login');
+      })
+      .catch(() => alert("❌ Error al eliminar la cuenta"));
   };
 
   return (
@@ -254,10 +254,21 @@ export default function FormularioPerfil({ datosUsuarioInicial, imagenPerfil, id
           {idioma === 'es' ? 'Cambiar contraseña' : 'Change password'}
         </button>
         {errors.correo && <div className="alert alert-danger">{errors.correo}</div>}
-        <button className="btn btn-danger" onClick={handleEliminarCuenta}>
+        <button className="btn btn-danger" onClick={() => setMostrarModalConfirmacion(true)}>
           {idioma === 'es' ? 'Eliminar cuenta' : 'Delete account'}
         </button>
       </div>
+
+
+      <ModalConfirmacion
+        mostrar={mostrarModalConfirmacion}
+        idioma={idioma}
+        onCancelar={() => setMostrarModalConfirmacion(false)}
+        onConfirmar={() => {
+          setMostrarModalConfirmacion(false);
+          handleEliminarCuenta();
+        }}
+      />
     </div>
   );
 }

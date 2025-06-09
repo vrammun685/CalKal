@@ -80,21 +80,41 @@ export default function PaginaPesos() {
   }, [pesos, fechaLimite]);
 
   return (
-    <div className='pesos'>
+    <div className='fondo'>
       <MenuPrincipal idioma={idioma} setIdioma={setIdioma} imagenPerfil={datosUsuario} />
-      
-      <FiltroPesos filtro={filtro} setFiltro={setFiltro} idioma={idioma} />
+      <div className="content-wrapper">
+        {/* Filtro arriba, centrado */}
+        <div className="d-flex justify-content-center mb-3 ">
+          <FiltroPesos filtro={filtro} setFiltro={setFiltro} idioma={idioma} />
+        </div>
 
-      <GraficoPesos pesos={pesosFiltrados} />
+        {/* Fila con gráfico a la izquierda y listado a la derecha */}
+        <div className="row-custom">
+          {/* Columna izquierda: gráfico */}
+          <div className="card-equal" style={{ flex: 2 }}>
+            <GraficoPesos pesos={pesosFiltrados} />
+          </div>
 
-      {/* Botón para abrir modal de creación */}
-      <button className="btn btn-primary mb-3" onClick={crearPeso}>
-        Nuevo Registro de Peso
-      </button>
+          {/* Columna derecha: listado + botón */}
+          <div
+            className="card-equal"
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+          >
+            <ListadoPesos
+              idioma={idioma}
+              pesos={pesosFiltrados}
+              eliminar={eliminar}
+              editar={editarPeso}
+            />
 
-      {/* Listado de pesos */}
-      <ListadoPesos idioma={idioma} pesos={pesosFiltrados} eliminar={eliminar} editar={editarPeso} />
-
+            <div className="d-flex justify-content-center mt-3">
+              <button className="btn btn-primary" onClick={crearPeso}>
+                {idioma === 'es' ? 'Nuevo Registro de Peso' : 'New Weight Record'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Modal con formulario para crear/editar peso */}
       {mostrarModalPeso && (
         <ModalFormularioPeso

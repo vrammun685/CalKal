@@ -48,7 +48,7 @@ export default function FormularioRegistro({ idioma }) {
   const validateUsername = async () => {
     if (!formData.username) return;
     try {
-      const res = await api.get(`check-username?username=${encodeURIComponent(formData.username)}`);
+      const res = await api.get(`check-username/?username=${encodeURIComponent(formData.username)}`);
       if (res.data.exists) {
         setErrors(prev => ({ ...prev, username: idioma === 'es' ? 'El nombre de usuario ya está en uso' : 'Username already taken' }));
       }
@@ -60,7 +60,7 @@ export default function FormularioRegistro({ idioma }) {
   const validateEmail = async () => {
     if (!formData.email) return;
     try {
-      const res = await api.get(`check-email?email=${encodeURIComponent(formData.email)}`);
+      const res = await api.get(`check-email/?email=${encodeURIComponent(formData.email)}`);
       if (res.data.exists) {
         setErrors(prev => ({ ...prev, email: idioma === 'es' ? 'El email ya está registrado' : 'Email already registered' }));
       }

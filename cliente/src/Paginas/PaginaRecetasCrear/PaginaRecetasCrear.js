@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import ListaAlimentosReceta from '../../Componentes/Listados/LisatdoAlimentosReceta/ListadoAlimentosReceta';
 import ModalAnadirAlimentoReceta from '../../Componentes/Modal/Modal_Alimento_Receta/ModalAlimentoReceta';
+import MenuPrincipal from '../../Componentes/Menus/MenuPrincipal/MenuPrincipal';
 import api from '../../auth/axiosConfig';
 import { useParams } from 'react-router-dom';
 
-export default function PaginaRecetasCrear({ idioma }) {
+export default function PaginaRecetasCrear() {
+  const [idioma, setIdioma] = useState(localStorage.getItem('idioma') || 'es');
   const { id } = useParams();
   const [mostrarModal, setMostrarModal] = useState(false);
   const [alimentoSeleccionado, setAlimentoSeleccionado] = useState(null);
@@ -131,6 +133,8 @@ export default function PaginaRecetasCrear({ idioma }) {
   }
 
   return (
+    <>
+    <MenuPrincipal idioma={idioma} setIdioma={setIdioma} />
     <div className="container mt-4">
       <h2>{id ? (idioma === 'es' ? 'Editar Receta' : 'Edit Recipe') : (idioma === 'es' ? 'Crear Receta' : 'Create Recipe')}</h2>
 
@@ -239,5 +243,6 @@ export default function PaginaRecetasCrear({ idioma }) {
         idioma={idioma}
       />
     </div>
+    </>
   );
 }

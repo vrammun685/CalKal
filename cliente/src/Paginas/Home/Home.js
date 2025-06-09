@@ -34,7 +34,7 @@ export default function Home() {
  return (
     <>
     {datos && datos.diario && (
-    <div className="home position-relative z-1">
+    <div className="home position-relative z-1 fondo">
         
 
         <MenuPrincipal idioma={idioma} setIdioma={setIdioma} />
