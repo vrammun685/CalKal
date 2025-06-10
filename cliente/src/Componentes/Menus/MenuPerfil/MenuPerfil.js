@@ -25,10 +25,10 @@ export default function MenuPerfil({ idioma }) {
       try {
         const response = await api.get('/imagenPrefil/');
         const imagen = response.data.foto_perfil;
-        setImagenPerfil(imagen || '/default-avatar.png');
+        setImagenPerfil(imagen || '/media/img/imagenSinPerfil.jpg');
       } catch (error) {
         console.error('Error al obtener la imagen de perfil:', error);
-        setImagenPerfil('/default-avatar.png');
+        setImagenPerfil('/media/img/imagenSinPerfil.jpg');
       }
     };
 
