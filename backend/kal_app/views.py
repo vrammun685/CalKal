@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status
 from kal_project import settings
 from .models import Usuario, Diario, PesoRegistrado, AlimentoConsumido, Comida, Alimento
 from .serializers import *
@@ -13,11 +13,11 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from datetime import date
 from collections import defaultdict
 from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import MultiPartParser, FormParser
 # Create your views here.
     
 class AlimentoListAPIView(ListAPIView):
@@ -47,6 +47,7 @@ class CheckEmail(APIView):
 class RegistroUsuario(CreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
         user = serializer.save()
@@ -197,11 +198,14 @@ class SolicitarImagenPerfil(APIView):
 
     def get(self, request):
         usuario = request.user
-        try:
-            imagen = request.build_absolute_uri(usuario.imagen_Perfil.url)
-        except (ValueError, AttributeError):
-            imagen = request.build_absolute_uri('/imagenSinPerfil.jpg')
-        return Response({"foto_perfil":imagen})
+
+        if usuario.imagen_Perfil:
+            # Si estás usando Cloudinary, imagen_Perfil.url ya es una URL absoluta
+            imagen_url = usuario.imagen_Perfil.url
+        else:
+            imagen_url = None
+
+        return Response({"foto_perfil": imagen_url})
 
 class Home(APIView):
     permission_classes = [IsAuthenticated]
@@ -446,23 +450,25 @@ class Perfil(APIView):
     
     def put(self, request):
         user = request.user
-        
-        # Serializador para validar y actualizar los datos (excepto la imagen)
+
         serializer = UsuarioEditarPerfilSerializer(user, data=request.data, partial=True, context={'request': request})
-        
+
         if serializer.is_valid():
             usuario_actualizado = serializer.save()
-            actualizarTrasActualizar(usuario_actualizado)
-            # Si envían imagen, la actualizamos aparte
+
             imagen = request.FILES.get('imagen_Perfil')
-            
             if imagen:
                 user.imagen_Perfil = imagen
                 user.save()
-            
+                # Re-serializamos para devolver la URL actualizada
+                serializer = UsuarioEditarPerfilSerializer(user, context={'request': request})
+
+            actualizarTrasActualizar(usuario_actualizado)
+
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class admin_panel_usuarios(APIView):

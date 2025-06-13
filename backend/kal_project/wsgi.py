@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 env = os.getenv('DJANGO_ENV', 'local')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'kal_project.settings.{env}')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'kal_project.settings.local')
 
 application = get_wsgi_application()

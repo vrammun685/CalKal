@@ -65,9 +65,9 @@ export default function Home() {
                         Tu navegador no soporta video HTML5.
                     </video>
                     <div className="contenido-sobre-video">
-                        <h2>{idioma === 'es' ? 'DESCUBRE NUESTRA API' : 'Use Our API'}</h2>
+                        <h2>{idioma === 'es' ? 'DESCUBRE NUESTRA API' : 'USE OUR API'}</h2>
                         <p className='fs-4'>{idioma === 'es' ? 'Utiliza nuestra API para tus proyectos personales copiando el siguiente link' : 'Use our API for your personal projects by copying the following link'}</p>
-                        <span className="copiar-enlace fs-4" onClick={() => copiarAlPortapapeles("http://127.0.0.1:8000/api/alimentos/", idioma)}>{idioma === 'es' ? 'Copiar enlace de la API' : 'Copy API link'}</span>
+                        <span className="copiar-enlace fs-4" onClick={() => copiarAlPortapapeles(`${process.env.REACT_APP_API_URL}/alimentos/`, idioma)}>{idioma === 'es' ? 'Copiar enlace de la API' : 'Copy API link'}</span>
                     </div>
                 </div>
 

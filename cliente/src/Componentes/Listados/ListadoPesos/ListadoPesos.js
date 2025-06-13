@@ -55,11 +55,11 @@ export default function ListadoPesos({ idioma, pesos, eliminar, editar }) {
                   )}
                 </td>
                 <td>
-                  <div className="d-flex justify-content-center">
-                    <button className="btn btn-sm btn-outline-primary me-2" onClick={() => editar(peso)}>
+                  <div className="d-flex justify-content-center gap-2">
+                    <button className="boton" onClick={() => editar(peso)}>
                       {idioma === 'es' ? "Editar" : "Update"}
                     </button>
-                    <button className="btn btn-sm btn-outline-danger" onClick={() => eliminar(peso.id)}>
+                    <button className="boton" onClick={() => eliminar(peso.id)}>
                       {idioma === 'es' ? "Eliminar" : "Delete"}
                     </button>
                   </div>

@@ -1,10 +1,8 @@
-from pathlib import Path
 from .base import *
 import os
-from decouple import config
 import dj_database_url
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['backend-calkal.onrender.com']
 
@@ -18,8 +16,6 @@ DATABASES = {
     )
 }
 
-MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CORS_ALLOWED_ORIGINS = [
     'https://calkal.netlify.app',  # Permitir solicitudes desde tu frontend React
