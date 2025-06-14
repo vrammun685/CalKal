@@ -18,7 +18,7 @@ export default function GraficoPesos({ pesos }) {
 
   return (
     <div className='grafico'>
-      <ResponsiveContainer width="99%" height={500}>
+      <ResponsiveContainer width="100%" height={500}>
         <LineChart  key={JSON.stringify(datosGrafico)} data={datosGrafico}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} horizontal={false} />
 

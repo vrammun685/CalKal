@@ -93,7 +93,7 @@ export default function PaginaPesos() {
           {/* Columna izquierda: gráfico */}
           
           <div className="contenedor-flex">
-            <div className="grafico">
+            <div className="Contenedorgrafico">
               <GraficoPesos pesos={pesosFiltrados} />
             </div>
 

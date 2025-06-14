@@ -33,12 +33,12 @@ export default function Home() {
 
  return (
     <>
-    {datos && datos.diario && (
+    
     <div className="home position-relative z-1 fondo">
         
 
         <MenuPrincipal idioma={idioma} setIdioma={setIdioma} />
-
+        {datos && datos.diario && (
         <div className="content-wrapper">
             {/* Fila superior */}
             <div className="row-custom top-row">
@@ -73,17 +73,26 @@ export default function Home() {
 
                 <div className="card-equal abajo card-con-gif">
                     <div className="contenido-lateral">
-                        <h3>{idioma === 'es' ? 'NO SABES QUE COMER?' : 'Bottom Section 2'}</h3>
-                        <p>{idioma === 'es' ? 'Otra sección para información adicional.' : 'Another section for extra info.'}</p>
+                        <h3>{idioma === 'es' ? '¿NO SABES QUÉ COMER?' : "DON'T KNOW WHAT TO EAT?"}</h3>
+                        <p>{idioma === 'es' ? 'Crea una receta y añádela al diario' : 'Create a recipe and add it to your journal'}</p>
+
+                        <button
+                        className="boton mt-3"
+                        onClick={() => window.location.href = "/ruta-a-la-pagina-de-recetas"} // <-- reemplaza por tu ruta real
+                        >
+                        {idioma === "es" ? "Ver recetas" : "View Recipes"}
+                        </button>
                     </div>
+
                     <div className="gif-lateral">
                         <img src="/media/gif/Gif-Comida.gif" alt="GIF ilustrativo" />
                     </div>
                 </div>
             </div>
         </div>
+        )}
     </div>
-    )}
+    
     </>
 );
 }
