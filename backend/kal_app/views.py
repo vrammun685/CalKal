@@ -6,7 +6,7 @@ from rest_framework import status
 from kal_project import settings
 from .models import Usuario, Diario, PesoRegistrado, AlimentoConsumido, Comida, Alimento
 from .serializers import *
-from .utils import correo_bienvenida, correo_cambiar_Contraseña, cambiar_Contraseña, crearDiario, crearPeso, actualizarTrasActualizar, actualizarTraEditarPeso, ActualizardiarioPorComida, ActualizardiarioPorAlimento
+from .utils import correo_bienvenida, correo_cambiar_Contraseña, cambiar_Contraseña, crearDiario, crearPeso, actualizarTrasActualizar, actualizarTraEditarPeso, ActualizarDiarioTotal
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.tokens import default_token_generator
@@ -14,7 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.exceptions import AuthenticationFailed
-from datetime import date
+from datetime import date, datetime, timedelta
 from collections import defaultdict
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -84,8 +84,6 @@ class Login(APIView):
                 "message":"Login successful",
                 "is_admin": user.is_staff,
             })
-            secure_cookie = not settings.DEBUG
-            samesite_policy = 'None' if not settings.DEBUG else 'Lax'
 
             response.set_cookie(
                 key='token',
@@ -157,14 +155,33 @@ class Refresh_Token(APIView):
             raise AuthenticationFailed('El refresh token no es válido o ha expirado.')
         
 class Logout(APIView):
-    permission_classes = [IsAuthenticated]  # ← IMPORTANTE
-    http_method_names = ['post', 'options']
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        response = Response({"message":"Logged out"}, status=status.HTTP_200_OK)
-        response.delete_cookie('token')
-        response.delete_cookie('refresh_token')
+        response = Response({"message": "Logged out"}, status=status.HTTP_200_OK)
+
+        expires = datetime.utcnow() - timedelta(days=1)
+
+        response.set_cookie(
+            key='token',
+            value='',
+            expires=expires,
+            path='/',
+            samesite='None',
+            secure=True,
+        )
+
+        response.set_cookie(
+            key='refresh_token',
+            value='',
+            expires=expires,
+            path='/',
+            samesite='None',
+            secure=True,
+        )
+
         return response
+    
 
 class SolicitarCorreoPass(APIView):
     def post(self, request):
@@ -285,7 +302,7 @@ class AlimentoConsumidoCrear(APIView):
             parte_del_dia=parte_dia,
             diario=diario
         )
-        ActualizardiarioPorAlimento(diario)
+        ActualizarDiarioTotal(diario)
         # Puedes devolver los datos que quieras
         return Response(status=status.HTTP_201_CREATED)
     
@@ -297,7 +314,7 @@ class AlimentoConsumidoCrear(APIView):
 
         alimento.delete()
         diario = Diario.objects.filter(usuario=request.user).order_by('-fecha').first()
-        ActualizardiarioPorAlimento(diario)
+        ActualizarDiarioTotal(diario)
         return Response({"detalle": "Alimento eliminado correctamente"}, status=status.HTTP_204_NO_CONTENT)
 
 class ComidaConsumidaCrear(APIView):
@@ -334,7 +351,7 @@ class ComidaConsumidaCrear(APIView):
             diario=diario
         )
 
-        ActualizardiarioPorComida(diario)
+        ActualizarDiarioTotal(diario)
 
         return Response({"mensaje": "Comida añadida correctamente."}, status=status.HTTP_201_CREATED)
     
@@ -345,7 +362,7 @@ class ComidaConsumidaCrear(APIView):
             return Response({"detalle": "Comida no encontrada o no tienes permiso"}, status=status.HTTP_404_NOT_FOUND)
         comida.delete()
         diario = Diario.objects.filter(usuario=request.user).order_by('-fecha').first()
-        ActualizardiarioPorComida(diario)
+        ActualizarDiarioTotal(diario)
         return Response({"detalle": "Comida eliminada correctamente"}, status=status.HTTP_204_NO_CONTENT)
 
 class Pesos(APIView):
@@ -443,8 +460,25 @@ class Perfil(APIView):
         response = Response({"detail": "Cuenta eliminada correctamente"}, status=204)
 
         # Borramos las cookies
-        response.delete_cookie('token')
-        response.delete_cookie('refresh_token')
+        expires = datetime.utcnow() - timedelta(days=1)
+
+        response.set_cookie(
+            key='token',
+            value='',
+            expires=expires,
+            path='/',
+            samesite='None',
+            secure=True,
+        )
+
+        response.set_cookie(
+            key='refresh_token',
+            value='',
+            expires=expires,
+            path='/',
+            samesite='None',
+            secure=True,
+        )
 
         # Eliminamos el usuario
         user.delete()

@@ -188,21 +188,27 @@ def actualizarTrasActualizar(usuario):
         diario.save()
     else:
         print('No existe diario para este usuario, no se pudo actualizar')
-
-def ActualizardiarioPorAlimento(diario):
+        
+def ActualizarDiarioTotal(diario):
+    # Sumar alimentos
     alimentos = AlimentoConsumido.objects.filter(diario=diario)
-    diario.calorias_Consumidas = sum(a.calorias_totales() for a in alimentos)
-    diario.proteinas_Consumidas = sum(a.proteinas_totales() for a in alimentos)
-    diario.grasas_Consumidas = sum(a.grasas_totales() for a in alimentos)
-    diario.carbohidratos_Consumidas = sum(a.carbohidratos_totales() for a in alimentos)
+    calorias_alimentos = sum(a.calorias_totales() for a in alimentos)
+    proteinas_alimentos = sum(a.proteinas_totales() for a in alimentos)
+    grasas_alimentos = sum(a.grasas_totales() for a in alimentos)
+    carbohidratos_alimentos = sum(a.carbohidratos_totales() for a in alimentos)
+
+    # Sumar comidas
+    comidas = ComidaConsumida.objects.filter(diario=diario)
+    calorias_comidas = sum(c.calorias_totales() for c in comidas)
+    proteinas_comidas = sum(c.proteinas_totales() for c in comidas)
+    grasas_comidas = sum(c.grasas_totales() for c in comidas)
+    carbohidratos_comidas = sum(c.carbohidratos_totales() for c in comidas)
+
+    # Sumar totales combinados
+    diario.calorias_Consumidas = calorias_alimentos + calorias_comidas
+    diario.proteinas_Consumidas = proteinas_alimentos + proteinas_comidas
+    diario.grasas_Consumidas = grasas_alimentos + grasas_comidas
+    diario.carbohidratos_Consumidas = carbohidratos_alimentos + carbohidratos_comidas
+
     diario.save()
 
-def ActualizardiarioPorComida(diario):
-    comidas_consumidas = ComidaConsumida.objects.filter(diario=diario)
-    
-    diario.calorias_Consumidas = sum(c.calorias_totales() for c in comidas_consumidas)
-    diario.proteinas_Consumidas = sum(c.proteinas_totales() for c in comidas_consumidas)
-    diario.grasas_Consumidas = sum(c.grasas_totales() for c in comidas_consumidas)
-    diario.carbohidratos_Consumidas = sum(c.carbohidratos_totales() for c in comidas_consumidas)
-    
-    diario.save()
